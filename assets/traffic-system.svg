@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" role="img" aria-labelledby="title desc">
+  <title id="title">交通信息工程系统链路示意图</title>
+  <desc id="desc">展示交通感知、通信网络、数据平台、控制中心和出行服务之间的数据流动。</desc>
+  <defs>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef8f7"/>
+    </linearGradient>
+    <linearGradient id="road" x1="0" x2="1">
+      <stop offset="0" stop-color="#273b46"/>
+      <stop offset="1" stop-color="#365765"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#17212b" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#0f8f8c"/>
+    </marker>
+  </defs>
+
+  <rect width="980" height="560" rx="8" fill="#f6fbfb"/>
+  <path d="M0 440 C180 365 300 530 500 455 C690 385 790 430 980 340 L980 560 L0 560 Z" fill="#dcefed"/>
+  <path d="M-20 470 L1010 235" stroke="url(#road)" stroke-width="92" stroke-linecap="round"/>
+  <path d="M-10 467 L1000 237" stroke="#f7fafb" stroke-width="6" stroke-dasharray="30 28" stroke-linecap="round" opacity=".85"/>
+
+  <g filter="url(#shadow)">
+    <rect x="62" y="64" width="190" height="124" rx="8" fill="url(#panel)" stroke="#dfe7ec"/>
+    <rect x="300" y="64" width="190" height="124" rx="8" fill="url(#panel)" stroke="#dfe7ec"/>
+    <rect x="538" y="64" width="190" height="124" rx="8" fill="url(#panel)" stroke="#dfe7ec"/>
+    <rect x="776" y="64" width="142" height="124" rx="8" fill="url(#panel)" stroke="#dfe7ec"/>
+  </g>
+
+  <g fill="#17212b" font-family="Microsoft YaHei, Arial, sans-serif">
+    <text x="157" y="108" font-size="22" font-weight="700" text-anchor="middle">现场感知</text>
+    <text x="395" y="108" font-size="22" font-weight="700" text-anchor="middle">通信网络</text>
+    <text x="633" y="108" font-size="22" font-weight="700" text-anchor="middle">数据平台</text>
+    <text x="847" y="108" font-size="22" font-weight="700" text-anchor="middle">服务反馈</text>
+  </g>
+  <g fill="#61707f" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15">
+    <text x="157" y="142" text-anchor="middle">视频 雷达 浮动车</text>
+    <text x="395" y="142" text-anchor="middle">5G 光纤 边缘计算</text>
+    <text x="633" y="142" text-anchor="middle">融合 预测 优化</text>
+    <text x="847" y="142" text-anchor="middle">信号 诱导 预警</text>
+  </g>
+
+  <g stroke="#0f8f8c" stroke-width="4" fill="none" marker-end="url(#arrow)">
+    <path d="M252 126 H292"/>
+    <path d="M490 126 H530"/>
+    <path d="M728 126 H768"/>
+    <path d="M850 188 C850 248 744 258 702 302"/>
+    <path d="M622 188 C610 248 536 265 488 318"/>
+    <path d="M390 188 C384 260 318 286 262 348"/>
+  </g>
+
+  <g transform="translate(165 356)">
+    <rect x="-78" y="-42" width="156" height="84" rx="8" fill="#ffffff" stroke="#dfe7ec"/>
+    <circle cx="-46" cy="-8" r="12" fill="#d65b4a"/>
+    <circle cx="-10" cy="-8" r="12" fill="#f0a424"/>
+    <circle cx="26" cy="-8" r="12" fill="#4b9d5a"/>
+    <rect x="-50" y="22" width="100" height="8" rx="4" fill="#dfe7ec"/>
+    <text x="0" y="-58" fill="#17212b" font-size="18" font-weight="700" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif">智慧路口</text>
+  </g>
+
+  <g transform="translate(485 326)">
+    <rect x="-96" y="-48" width="192" height="96" rx="8" fill="#ffffff" stroke="#dfe7ec"/>
+    <path d="M-58 20 L-18 -4 L18 12 L58 -24" fill="none" stroke="#0f8f8c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="-58" cy="20" r="7" fill="#0f8f8c"/>
+    <circle cx="-18" cy="-4" r="7" fill="#2c6ed5"/>
+    <circle cx="18" cy="12" r="7" fill="#f0a424"/>
+    <circle cx="58" cy="-24" r="7" fill="#4b9d5a"/>
+    <text x="0" y="-64" fill="#17212b" font-size="18" font-weight="700" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif">预测分析</text>
+  </g>
+
+  <g transform="translate(710 298)">
+    <rect x="-88" y="-46" width="176" height="92" rx="8" fill="#ffffff" stroke="#dfe7ec"/>
+    <rect x="-54" y="-16" width="34" height="46" rx="4" fill="#0f8f8c"/>
+    <rect x="-10" y="-30" width="34" height="60" rx="4" fill="#2c6ed5"/>
+    <rect x="34" y="-4" width="34" height="34" rx="4" fill="#f0a424"/>
+    <text x="0" y="-62" fill="#17212b" font-size="18" font-weight="700" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif">控制决策</text>
+  </g>
+
+  <g>
+    <rect x="710" y="394" width="96" height="32" rx="16" fill="#0f8f8c"/>
+    <rect x="826" y="360" width="104" height="34" rx="17" fill="#f0a424"/>
+    <rect x="790" y="456" width="128" height="34" rx="17" fill="#2c6ed5"/>
+    <text x="758" y="416" fill="#ffffff" font-size="15" font-weight="700" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif">公交优先</text>
+    <text x="878" y="383" fill="#17212b" font-size="15" font-weight="700" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif">路径诱导</text>
+    <text x="854" y="479" fill="#ffffff" font-size="15" font-weight="700" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif">安全预警</text>
+  </g>
+</svg>

@@ -27,6 +27,7 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 Desktop.ini
+AGENTS.MD
 
 # Temporary files
 tmp/
