@@ -1,0 +1,1223 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>交通信息工程及控制 — 专业介绍</title>
+    <meta name="description" content="交通信息工程及控制专业介绍：研究交通信息感知、数据处理、系统建模与控制优化的交叉型学科方向。" />
+    <style>
+      :root {
+        --ink: #111827;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --paper: #f9fafb;
+        --white: #ffffff;
+        --primary: #1d4ed8;
+        --primary-dark: #1e3a8a;
+        --accent: #0ea5e9;
+        --green: #059669;
+        --amber: #d97706;
+        --purple: #7c3aed;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+        --shadow: 0 4px 20px rgba(0,0,0,.10);
+        --shadow-lg: 0 20px 60px rgba(0,0,0,.14);
+        --r: 12px;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; font-size: 16px; }
+
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", Inter, Arial, sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+        line-height: 1.7;
+      }
+
+      a { color: inherit; text-decoration: none; }
+      img { display: block; max-width: 100%; }
+
+      /* ── Header ── */
+      .header {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        height: 64px;
+        padding: 0 clamp(16px, 4vw, 60px);
+        background: rgba(17, 24, 39, 0.80);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255,255,255,.10);
+        color: #fff;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 15px;
+        white-space: nowrap;
+      }
+
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--accent), var(--primary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      .nav {
+        display: flex;
+        gap: clamp(10px, 2vw, 28px);
+        font-size: 13.5px;
+        color: rgba(255,255,255,.80);
+      }
+
+      .nav a:hover { color: #fff; }
+
+      /* ── Hero ── */
+      .hero {
+        position: relative;
+        min-height: 95vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 100px clamp(16px, 5vw, 80px) 60px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0c2340 100%);
+        color: #fff;
+        overflow: hidden;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(ellipse 60% 50% at 80% 30%, rgba(14,165,233,.18) 0%, transparent 70%),
+          radial-gradient(ellipse 40% 40% at 20% 70%, rgba(29,78,216,.20) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      /* animated grid */
+      .hero-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+      }
+
+      .hero-inner {
+        position: relative;
+        max-width: 760px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 100px;
+        background: rgba(14,165,233,.18);
+        border: 1px solid rgba(14,165,233,.35);
+        font-size: 13px;
+        color: var(--accent);
+        margin-bottom: 24px;
+        letter-spacing: .02em;
+      }
+
+      .badge::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2s ease infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .3; }
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -.02em;
+        margin-bottom: 20px;
+      }
+
+      .hero h1 em {
+        font-style: normal;
+        background: linear-gradient(90deg, var(--accent), #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-desc {
+        font-size: clamp(15px, 2vw, 18px);
+        color: rgba(255,255,255,.75);
+        max-width: 600px;
+        margin-bottom: 36px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform .15s, box-shadow .15s;
+      }
+
+      .btn:hover { transform: translateY(-1px); }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(14,165,233,.40);
+      }
+
+      .btn-primary:hover { box-shadow: 0 8px 24px rgba(14,165,233,.50); }
+
+      .btn-ghost {
+        border: 1.5px solid rgba(255,255,255,.30);
+        color: rgba(255,255,255,.90);
+      }
+
+      .btn-ghost:hover { border-color: rgba(255,255,255,.60); }
+
+      .hero-stats {
+        position: absolute;
+        right: clamp(16px, 5vw, 80px);
+        bottom: 60px;
+        display: flex;
+        gap: 32px;
+      }
+
+      .hero-stat {
+        text-align: center;
+      }
+
+      .hero-stat strong {
+        display: block;
+        font-size: clamp(22px, 3vw, 36px);
+        font-weight: 800;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+
+      .hero-stat span {
+        font-size: 12px;
+        color: rgba(255,255,255,.60);
+        letter-spacing: .04em;
+      }
+
+      /* ── Generic section ── */
+      .section {
+        padding: clamp(64px, 8vw, 100px) clamp(16px, 5vw, 80px);
+      }
+
+      .section-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 12px;
+      }
+
+      .section-label::before {
+        content: '';
+        width: 20px;
+        height: 2px;
+        background: var(--primary);
+        border-radius: 2px;
+      }
+
+      .section-title {
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: -.02em;
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+
+      .section-sub {
+        font-size: 16px;
+        color: var(--muted);
+        max-width: 560px;
+      }
+
+      .section-head { margin-bottom: 52px; }
+
+      /* ── About band ── */
+      .about {
+        background: var(--white);
+      }
+
+      .about-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .about-visual {
+        position: relative;
+      }
+
+      .about-diagram {
+        width: 100%;
+        border-radius: var(--r);
+        background: linear-gradient(135deg, #0f172a, #1e3a5f);
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .diagram-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .d-node {
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        color: #fff;
+        white-space: nowrap;
+      }
+
+      .d-node.blue  { background: rgba(14,165,233,.25); border: 1px solid rgba(14,165,233,.50); }
+      .d-node.green { background: rgba(5,150,105,.25);  border: 1px solid rgba(5,150,105,.50); }
+      .d-node.amber { background: rgba(217,119,6,.25);  border: 1px solid rgba(217,119,6,.50); }
+      .d-node.purple{ background: rgba(124,58,237,.25); border: 1px solid rgba(124,58,237,.50); }
+
+      .d-arrow {
+        width: 24px;
+        height: 2px;
+        background: rgba(255,255,255,.30);
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .d-arrow::after {
+        content: '';
+        position: absolute;
+        right: -1px;
+        top: -3px;
+        border: 4px solid transparent;
+        border-left-color: rgba(255,255,255,.30);
+      }
+
+      .d-down {
+        text-align: center;
+        color: rgba(255,255,255,.30);
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .about-text .section-title { margin-bottom: 20px; }
+
+      .about-text p {
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 24px;
+      }
+
+      .tag {
+        padding: 5px 14px;
+        border-radius: 100px;
+        font-size: 12.5px;
+        font-weight: 600;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      /* ── Research directions ── */
+      .directions {
+        background: var(--paper);
+      }
+
+      .dir-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .dir-card {
+        background: var(--white);
+        border-radius: var(--r);
+        padding: 32px;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow .2s, transform .2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .dir-card:hover {
+        box-shadow: var(--shadow);
+        transform: translateY(-3px);
+      }
+
+      .dir-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+      }
+
+      .dir-card:nth-child(1)::before { background: var(--accent); }
+      .dir-card:nth-child(2)::before { background: var(--green); }
+      .dir-card:nth-child(3)::before { background: var(--amber); }
+      .dir-card:nth-child(4)::before { background: var(--purple); }
+
+      .dir-num {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .12em;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+
+      .dir-icon {
+        font-size: 32px;
+        margin-bottom: 16px;
+        line-height: 1;
+      }
+
+      .dir-card h3 {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--ink);
+      }
+
+      .dir-card p {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.65;
+        margin-bottom: 16px;
+      }
+
+      .dir-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .dir-tag {
+        font-size: 11.5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        background: var(--paper);
+        color: var(--muted);
+        border: 1px solid var(--line);
+      }
+
+      /* ── Curriculum ── */
+      .curriculum {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .curriculum .section-label { color: var(--accent); }
+      .curriculum .section-label::before { background: var(--accent); }
+      .curriculum .section-title { color: #fff; }
+      .curriculum .section-sub { color: rgba(255,255,255,.60); }
+
+      .cur-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2px;
+        background: rgba(255,255,255,.06);
+        border-radius: var(--r);
+        overflow: hidden;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .cur-col {
+        background: rgba(255,255,255,.03);
+        padding: 32px 28px;
+      }
+
+      .cur-col h3 {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255,255,255,.10);
+      }
+
+      .cur-col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .cur-col li {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 14px;
+        color: rgba(255,255,255,.75);
+      }
+
+      .cur-col li::before {
+        content: '›';
+        color: var(--accent);
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* ── Training path ── */
+      .training {
+        background: var(--white);
+      }
+
+      .train-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .train-path {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .train-step {
+        display: flex;
+        gap: 20px;
+        position: relative;
+      }
+
+      .train-step:not(:last-child) .step-line {
+        position: absolute;
+        left: 19px;
+        top: 40px;
+        width: 2px;
+        height: calc(100% - 16px);
+        background: var(--line);
+      }
+
+      .step-dot {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+      }
+
+      .step-dot.s1 { background: var(--accent); }
+      .step-dot.s2 { background: var(--green); }
+      .step-dot.s3 { background: var(--amber); }
+      .step-dot.s4 { background: var(--purple); }
+
+      .step-body {
+        padding-bottom: 36px;
+        flex: 1;
+      }
+
+      .step-body h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        margin-top: 7px;
+      }
+
+      .step-body p {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .train-goals {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .goal-card {
+        display: flex;
+        gap: 16px;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        align-items: flex-start;
+      }
+
+      .goal-icon {
+        font-size: 24px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .goal-card h4 {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+
+      .goal-card p {
+        font-size: 13.5px;
+        color: var(--muted);
+      }
+
+      /* ── Career ── */
+      .career {
+        background: var(--paper);
+      }
+
+      .career-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .career-card {
+        background: var(--white);
+        border-radius: var(--r);
+        padding: 28px;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow .2s;
+      }
+
+      .career-card:hover { box-shadow: var(--shadow); }
+
+      .career-emoji {
+        font-size: 28px;
+        margin-bottom: 14px;
+      }
+
+      .career-card h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .career-card p {
+        font-size: 13.5px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 14px;
+      }
+
+      .career-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .career-list li {
+        font-size: 12.5px;
+        color: var(--muted);
+        padding-left: 14px;
+        position: relative;
+      }
+
+      .career-list li::before {
+        content: '·';
+        position: absolute;
+        left: 4px;
+        color: var(--primary);
+        font-weight: 700;
+      }
+
+      /* ── Highlight band ── */
+      .highlight {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        color: #fff;
+        padding: clamp(60px, 8vw, 90px) clamp(16px, 5vw, 80px);
+        text-align: center;
+      }
+
+      .highlight h2 {
+        font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+        font-weight: 800;
+        margin-bottom: 16px;
+        letter-spacing: -.01em;
+      }
+
+      .highlight p {
+        font-size: 16px;
+        color: rgba(255,255,255,.80);
+        max-width: 520px;
+        margin: 0 auto 32px;
+      }
+
+      .highlight-stats {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 40px;
+        padding-top: 40px;
+        border-top: 1px solid rgba(255,255,255,.20);
+      }
+
+      .hl-stat strong {
+        display: block;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 800;
+        letter-spacing: -.02em;
+        color: #fff;
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+
+      .hl-stat span {
+        font-size: 13px;
+        color: rgba(255,255,255,.65);
+      }
+
+      /* ── Footer ── */
+      .footer {
+        background: var(--ink);
+        color: rgba(255,255,255,.50);
+        padding: 32px clamp(16px, 5vw, 80px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .footer a {
+        color: rgba(255,255,255,.70);
+        transition: color .15s;
+      }
+
+      .footer a:hover { color: #fff; }
+
+      /* ── Responsive ── */
+      @media (max-width: 768px) {
+        .about-inner,
+        .train-inner {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-stats {
+          position: static;
+          margin-top: 48px;
+          justify-content: flex-start;
+        }
+
+        .nav { display: none; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="header" id="top">
+      <div class="logo">
+        <div class="logo-icon">🚦</div>
+        <span>交通信息工程及控制</span>
+      </div>
+      <nav class="nav" aria-label="主要栏目">
+        <a href="#about">专业简介</a>
+        <a href="#directions">研究方向</a>
+        <a href="#curriculum">课程体系</a>
+        <a href="#training">培养路径</a>
+        <a href="#career">就业发展</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-grid" aria-hidden="true"></div>
+
+        <div class="hero-inner">
+          <div class="badge">交通运输工程 · 二级学科</div>
+
+          <h1 id="hero-title">
+            交通信息工程<br />
+            <em>及控制</em>
+          </h1>
+
+          <p class="hero-desc">
+            融合交通工程、信息技术与自动控制，研究交通状态感知、信息处理、系统建模与优化控制，
+            培养能够主导智慧交通系统建设与运营的复合型高端人才。
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#about">了解专业</a>
+            <a class="btn btn-ghost" href="#career">就业方向</a>
+          </div>
+        </div>
+
+        <div class="hero-stats" aria-label="专业核心关键词">
+          <div class="hero-stat">
+            <strong>感知</strong>
+            <span>多源数据采集</span>
+          </div>
+          <div class="hero-stat">
+            <strong>分析</strong>
+            <span>智能信息处理</span>
+          </div>
+          <div class="hero-stat">
+            <strong>控制</strong>
+            <span>系统优化调度</span>
+          </div>
+          <div class="hero-stat">
+            <strong>协同</strong>
+            <span>车路云一体化</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="section about">
+        <div class="about-inner">
+          <div class="about-visual">
+            <div class="about-diagram" aria-label="交通信息工程及控制系统链路示意">
+              <div class="diagram-row">
+                <div class="d-node blue">视频 · 雷达</div>
+                <div class="d-node blue">地磁 · GPS</div>
+                <div class="d-node blue">手机信令</div>
+              </div>
+              <div class="d-down">↓ 数据采集层</div>
+              <div class="diagram-row">
+                <div class="d-node green">数据清洗融合</div>
+                <div class="d-arrow"></div>
+                <div class="d-node green">时空特征提取</div>
+              </div>
+              <div class="d-down">↓ 信息处理层</div>
+              <div class="diagram-row">
+                <div class="d-node amber">交通流建模</div>
+                <div class="d-arrow"></div>
+                <div class="d-node amber">状态预测预警</div>
+              </div>
+              <div class="d-down">↓ 分析决策层</div>
+              <div class="diagram-row">
+                <div class="d-node purple">信号控制</div>
+                <div class="d-node purple">路径诱导</div>
+                <div class="d-node purple">应急调度</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-text">
+            <div class="section-label">About</div>
+            <h2 class="section-title">什么是交通信息工程及控制</h2>
+            <p>
+              交通信息工程及控制是交通运输工程一级学科下的二级学科方向，
+              研究如何利用信息技术手段获取、传输、处理交通数据，
+              并依据分析结果对交通系统实施科学控制与优化管理。
+            </p>
+            <p>
+              该方向立足于"信息—模型—控制"的完整工程链路，
+              将交通工程理论与计算机科学、通信技术、自动控制、人工智能深度融合，
+              是建设智慧交通城市、提升综合运输效率的重要支撑学科。
+            </p>
+            <div class="tag-row">
+              <span class="tag">交通运输工程</span>
+              <span class="tag">自动控制原理</span>
+              <span class="tag">大数据分析</span>
+              <span class="tag">深度学习</span>
+              <span class="tag">通信网络</span>
+              <span class="tag">交通仿真</span>
+              <span class="tag">车路协同</span>
+              <span class="tag">智慧城市</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Research Directions -->
+      <section id="directions" class="section directions">
+        <div class="section-head">
+          <div class="section-label">Research Directions</div>
+          <h2 class="section-title">四大研究方向</h2>
+          <p class="section-sub">覆盖交通信息感知、数据智能、系统控制与协同应用全链路</p>
+        </div>
+
+        <div class="dir-grid">
+          <article class="dir-card">
+            <div class="dir-num">01</div>
+            <div class="dir-icon">📡</div>
+            <h3>交通信息感知与采集</h3>
+            <p>
+              研究利用视频摄像机、毫米波雷达、地磁感应、浮动车、路侧单元（RSU）等设备获取道路交通流量、
+              速度、密度、事件等实时数据的方法与技术体系。
+            </p>
+            <div class="dir-tags">
+              <span class="dir-tag">目标检测</span>
+              <span class="dir-tag">雷达信号处理</span>
+              <span class="dir-tag">多源融合</span>
+              <span class="dir-tag">物联网接入</span>
+            </div>
+          </article>
+
+          <article class="dir-card">
+            <div class="dir-num">02</div>
+            <div class="dir-icon">🧮</div>
+            <h3>交通数据分析与建模</h3>
+            <p>
+              建立交通流运行规律模型，利用统计分析、机器学习、深度学习等方法实现交通状态识别、
+              短时流量预测、拥堵溯源与交通需求估计。
+            </p>
+            <div class="dir-tags">
+              <span class="dir-tag">时空数据挖掘</span>
+              <span class="dir-tag">交通流预测</span>
+              <span class="dir-tag">图神经网络</span>
+              <span class="dir-tag">需求建模</span>
+            </div>
+          </article>
+
+          <article class="dir-card">
+            <div class="dir-num">03</div>
+            <div class="dir-icon">🚦</div>
+            <h3>交通控制理论与方法</h3>
+            <p>
+              研究交叉口信号配时、干线绿波协调、区域自适应控制、公交优先信号及高速公路匝道控制等，
+              以控制论方法提升路网通行能力。
+            </p>
+            <div class="dir-tags">
+              <span class="dir-tag">信号控制</span>
+              <span class="dir-tag">反馈控制</span>
+              <span class="dir-tag">强化学习</span>
+              <span class="dir-tag">仿真优化</span>
+            </div>
+          </article>
+
+          <article class="dir-card">
+            <div class="dir-num">04</div>
+            <div class="dir-icon">🚗</div>
+            <h3>车路协同与智能交通系统</h3>
+            <p>
+              面向自动驾驶与智能网联汽车，研究 V2X 通信、路侧计算、协同感知、自动驾驶测试与验证，
+              构建车路云一体化应用体系。
+            </p>
+            <div class="dir-tags">
+              <span class="dir-tag">V2X 通信</span>
+              <span class="dir-tag">边缘计算</span>
+              <span class="dir-tag">协同感知</span>
+              <span class="dir-tag">自动驾驶</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Curriculum -->
+      <section id="curriculum" class="section curriculum">
+        <div class="section-head" style="max-width:1200px;margin:0 auto 48px;">
+          <div class="section-label">Curriculum</div>
+          <h2 class="section-title">课程体系</h2>
+          <p class="section-sub">四大模块构成完整的知识与能力框架</p>
+        </div>
+
+        <div class="cur-grid">
+          <div class="cur-col">
+            <h3>交通基础</h3>
+            <ul>
+              <li>交通工程学</li>
+              <li>交通流理论</li>
+              <li>交通规划与管理</li>
+              <li>道路交通安全</li>
+              <li>交通系统仿真</li>
+              <li>运输组织学</li>
+            </ul>
+          </div>
+
+          <div class="cur-col">
+            <h3>信息技术</h3>
+            <ul>
+              <li>程序设计与数据结构</li>
+              <li>数据库与信息系统</li>
+              <li>计算机网络</li>
+              <li>交通大数据分析</li>
+              <li>GIS 与时空分析</li>
+              <li>嵌入式系统开发</li>
+            </ul>
+          </div>
+
+          <div class="cur-col">
+            <h3>控制与智能</h3>
+            <ul>
+              <li>自动控制原理</li>
+              <li>交通信号控制</li>
+              <li>机器学习基础</li>
+              <li>深度学习与应用</li>
+              <li>智能优化算法</li>
+              <li>强化学习控制</li>
+            </ul>
+          </div>
+
+          <div class="cur-col">
+            <h3>综合应用</h3>
+            <ul>
+              <li>智能交通系统</li>
+              <li>车路协同技术</li>
+              <li>城市交通治理</li>
+              <li>交通仿真与评估</li>
+              <li>科研方法与论文写作</li>
+              <li>综合工程实践</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Training -->
+      <section id="training" class="section training">
+        <div class="train-inner">
+          <div>
+            <div class="section-label">Training Path</div>
+            <h2 class="section-title">培养路径</h2>
+            <p class="section-sub" style="margin-bottom:40px;">
+              从理论学习到工程实践，系统构建信息感知、数据分析与控制优化能力。
+            </p>
+
+            <div class="train-path">
+              <div class="train-step">
+                <div class="step-line"></div>
+                <div class="step-dot s1">1</div>
+                <div class="step-body">
+                  <h3>基础理论构建</h3>
+                  <p>夯实交通工程、数学基础、程序设计和自动控制原理等核心理论，建立跨学科知识体系。</p>
+                </div>
+              </div>
+              <div class="train-step">
+                <div class="step-line"></div>
+                <div class="step-dot s2">2</div>
+                <div class="step-body">
+                  <h3>数据与算法实训</h3>
+                  <p>开展交通调查、数据处理、模型训练和仿真实验，掌握从数据到洞察的完整流程。</p>
+                </div>
+              </div>
+              <div class="train-step">
+                <div class="step-line"></div>
+                <div class="step-dot s3">3</div>
+                <div class="step-body">
+                  <h3>系统开发与控制</h3>
+                  <p>结合真实路网场景进行信号控制系统开发、交通平台原型实现和联合仿真验证。</p>
+                </div>
+              </div>
+              <div class="train-step">
+                <div class="step-dot s4">4</div>
+                <div class="step-body">
+                  <h3>科研 / 项目综合</h3>
+                  <p>参与省部级课题、企业横向项目或竞赛，以研究生论文或工程项目完成独立成果输出。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-label">Objectives</div>
+            <h2 class="section-title">培养目标</h2>
+            <div class="train-goals">
+              <div class="goal-card">
+                <div class="goal-icon">🔬</div>
+                <div>
+                  <h4>科研创新能力</h4>
+                  <p>能够独立开展交通信息处理与控制领域的学术研究，产出高水平论文和技术成果。</p>
+                </div>
+              </div>
+              <div class="goal-card">
+                <div class="goal-icon">⚙️</div>
+                <div>
+                  <h4>工程实践能力</h4>
+                  <p>具备智慧交通平台、信号控制系统和车路协同应用的完整工程开发与部署能力。</p>
+                </div>
+              </div>
+              <div class="goal-card">
+                <div class="goal-icon">🤝</div>
+                <div>
+                  <h4>跨学科协同能力</h4>
+                  <p>能有效整合交通、通信、计算机、控制等多学科资源，协同解决复杂系统问题。</p>
+                </div>
+              </div>
+              <div class="goal-card">
+                <div class="goal-icon">🌐</div>
+                <div>
+                  <h4>行业引领潜力</h4>
+                  <p>在政府交管、科研院所或科技企业中承担技术负责人角色，推动行业数字化转型。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Highlight band -->
+      <section class="highlight" aria-label="专业核心数据">
+        <h2>连接数据与城市交通智慧</h2>
+        <p>交通信息工程及控制将严谨的工程方法与真实城市挑战紧密结合，是智慧交通时代最具发展潜力的学科方向之一。</p>
+        <a class="btn btn-primary" href="#career">探索就业方向</a>
+
+        <div class="highlight-stats">
+          <div class="hl-stat">
+            <strong>4+</strong>
+            <span>核心研究方向</span>
+          </div>
+          <div class="hl-stat">
+            <strong>20+</strong>
+            <span>核心课程</span>
+          </div>
+          <div class="hl-stat">
+            <strong>6+</strong>
+            <span>就业行业领域</span>
+          </div>
+          <div class="hl-stat">
+            <strong>∞</strong>
+            <span>发展可能性</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Career -->
+      <section id="career" class="section career">
+        <div class="section-head" style="max-width:1200px;margin:0 auto 48px;">
+          <div class="section-label">Career</div>
+          <h2 class="section-title">就业与发展方向</h2>
+          <p class="section-sub">毕业生广泛服务于政府、科研、企业和高校等多类机构</p>
+        </div>
+
+        <div class="career-grid" style="max-width:1200px;margin:0 auto;">
+          <div class="career-card">
+            <div class="career-emoji">🏛️</div>
+            <h3>政府交通管理机构</h3>
+            <p>参与城市交通信息化建设、智慧交管平台运营维护与交通政策研究。</p>
+            <ul class="career-list">
+              <li>交通运输局 / 公安交管局</li>
+              <li>城市交通指挥中心</li>
+              <li>交通运输部直属单位</li>
+            </ul>
+          </div>
+
+          <div class="career-card">
+            <div class="career-emoji">🏗️</div>
+            <h3>交通规划设计单位</h3>
+            <p>主导交通信息系统规划、智慧道路设计和城市交通组织优化方案制定。</p>
+            <ul class="career-list">
+              <li>综合交通规划院</li>
+              <li>城市轨道交通设计院</li>
+              <li>公路勘察设计研究院</li>
+            </ul>
+          </div>
+
+          <div class="career-card">
+            <div class="career-emoji">💻</div>
+            <h3>智能交通科技企业</h3>
+            <p>从事交通大数据产品、信号控制系统、车路协同平台和出行服务的研发与运营。</p>
+            <ul class="career-list">
+              <li>华为 / 阿里云 / 滴滴</li>
+              <li>海信 / 大华 / 宇视</li>
+              <li>各智慧城市解决方案商</li>
+            </ul>
+          </div>
+
+          <div class="career-card">
+            <div class="career-emoji">🚆</div>
+            <h3>轨道交通与综合运输</h3>
+            <p>支撑城市轨道、高速铁路和物流行业的运营调度、客流分析和信息系统建设。</p>
+            <ul class="career-list">
+              <li>城市地铁公司</li>
+              <li>铁路局集团</li>
+              <li>港口与物流平台</li>
+            </ul>
+          </div>
+
+          <div class="career-card">
+            <div class="career-emoji">🔬</div>
+            <h3>科研院所</h3>
+            <p>在交通运输、计算机或控制领域的国家级科研平台从事基础研究与应用攻关。</p>
+            <ul class="career-list">
+              <li>交通运输研究院</li>
+              <li>中科院相关研究所</li>
+              <li>国家重点实验室</li>
+            </ul>
+          </div>
+
+          <div class="career-card">
+            <div class="career-emoji">🎓</div>
+            <h3>继续深造</h3>
+            <p>可在交通运输工程、控制科学、计算机或人工智能方向继续攻读博士或出国深造。</p>
+            <ul class="career-list">
+              <li>国内顶校博士项目</li>
+              <li>海外联培 / 全额奖学金</li>
+              <li>博士后研究员</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>交通信息工程及控制 — 专业介绍页</span>
+      <a href="#top">返回顶部 ↑</a>
+    </footer>
+  </body>
+</html>
