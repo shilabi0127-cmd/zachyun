@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>交通信息工程及控制 | Traffic Information Engineering & Control</title>
+  <style>
+    /* ════════════════════════════════════════
+       ROOT & RESET
+    ════════════════════════════════════════ */
+    :root {
+      --cyan:   #00d4ff;
+      --blue:   #0066ff;
+      --purple: #7b2fff;
+      --green:  #00ff88;
+      --amber:  #ffaa00;
+      --red:    #ff3366;
+      --bg:     #020810;
+      --bg2:    #040f1e;
+      --glass:  rgba(0,180,255,.06);
+      --border: rgba(0,212,255,.18);
+      --text:   #c8dff0;
+      --white:  #ffffff;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang SC","Microsoft YaHei","Segoe UI",Inter,sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: rgba(0,212,255,.3); }
+
+    /* ════════════════════════════════════════
+       SCROLLBAR
+    ════════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+    /* ════════════════════════════════════════
+       HEADER
+    ════════════════════════════════════════ */
+    .header {
+      position: fixed; inset: 0 0 auto; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      height: 60px; padding: 0 clamp(16px,4vw,64px);
+      background: rgba(2,8,16,.80);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 700; color: var(--white);
+      white-space: nowrap;
+    }
+    .logo-hex {
+      width: 32px; height: 32px; position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-hex svg { position: absolute; inset: 0; animation: spin-slow 10s linear infinite; }
+    .logo-hex span { font-size: 14px; position: relative; z-index: 1; }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+    .nav {
+      display: flex; gap: clamp(12px,2vw,32px);
+      font-size: 13px; color: rgba(200,223,240,.70);
+    }
+    .nav a { padding: 6px 0; border-bottom: 1px solid transparent; transition: color .2s, border-color .2s; }
+    .nav a:hover { color: var(--cyan); border-color: var(--cyan); }
+
+    .header-cta {
+      padding: 7px 18px; border-radius: 4px; font-size: 13px; font-weight: 600;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      color: var(--white); white-space: nowrap;
+      box-shadow: 0 0 20px rgba(0,212,255,.30);
+      transition: box-shadow .2s;
+    }
+    .header-cta:hover { box-shadow: 0 0 32px rgba(0,212,255,.55); }
+
+    /* ════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════ */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px clamp(16px,5vw,80px) 60px;
+      overflow: hidden;
+    }
+
+    #heroCanvas {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+
+    .hero-grid-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,212,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .hero-glow {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 60% at 60% 40%, rgba(0,102,255,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 20% 70%, rgba(123,47,255,.10) 0%, transparent 70%);
+    }
+
+    .hero-inner { position: relative; max-width: 900px; }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: 2px; margin-bottom: 28px;
+      border: 1px solid rgba(0,212,255,.35);
+      background: rgba(0,212,255,.07);
+      font-size: 11px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--cyan);
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cyan);
+      animation: blink 1.4s ease infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    .hero h1 {
+      font-size: clamp(2.2rem,6vw,5rem);
+      font-weight: 900; letter-spacing: -.03em; line-height: 1.08;
+      color: var(--white); margin-bottom: 8px;
+    }
+    .hero h1 .en {
+      display: block; font-size: clamp(1rem,2.5vw,1.6rem);
+      font-weight: 400; letter-spacing: .04em; color: rgba(255,255,255,.45);
+      margin-top: 8px; font-style: italic;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(90deg, var(--cyan), var(--blue), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      margin: 28px 0 40px;
+      font-size: clamp(15px,2vw,18px); color: rgba(200,223,240,.75);
+      max-width: 640px; line-height: 1.8;
+    }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn-primary {
+      padding: 13px 32px; border-radius: 4px; font-size: 15px; font-weight: 700;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      color: var(--white); cursor: pointer;
+      box-shadow: 0 0 30px rgba(0,212,255,.35);
+      transition: box-shadow .2s, transform .15s;
+    }
+    .btn-primary:hover { box-shadow: 0 0 50px rgba(0,212,255,.6); transform: translateY(-2px); }
+
+    .btn-outline {
+      padding: 13px 32px; border-radius: 4px; font-size: 15px; font-weight: 700;
+      border: 1px solid var(--border); color: var(--cyan); cursor: pointer;
+      background: rgba(0,212,255,.05);
+      transition: background .2s, box-shadow .2s;
+    }
+    .btn-outline:hover { background: rgba(0,212,255,.12); box-shadow: 0 0 20px rgba(0,212,255,.20); }
+
+    /* floating stats */
+    .hero-floats {
+      position: absolute; right: clamp(16px,5vw,80px); bottom: 80px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .hero-float {
+      padding: 16px 20px; border-radius: 6px; min-width: 160px;
+      background: rgba(4,15,30,.80); border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .hero-float strong {
+      display: block; font-size: 28px; font-weight: 900;
+      color: var(--cyan); letter-spacing: -.02em; line-height: 1;
+    }
+    .hero-float span { font-size: 12px; color: rgba(200,223,240,.55); letter-spacing: .04em; }
+
+    /* ════════════════════════════════════════
+       SCROLL-REVEAL BASE
+    ════════════════════════════════════════ */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left  { opacity:0; transform:translateX(-40px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal-right { opacity:0; transform:translateX(40px);  transition: opacity .7s ease, transform .7s ease; }
+    .reveal-left.visible, .reveal-right.visible { opacity:1; transform:translateX(0); }
+
+    /* ════════════════════════════════════════
+       SECTION SHELL
+    ════════════════════════════════════════ */
+    .section {
+      padding: clamp(72px,10vw,120px) clamp(16px,5vw,80px);
+      position: relative;
+    }
+
+    .sec-label {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+      font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .sec-label::before { content:''; width:24px; height:1px; background:var(--cyan); }
+    .sec-label::after  { content:''; width:6px;  height:1px; background:var(--cyan); }
+
+    .sec-title {
+      font-size: clamp(1.8rem,4vw,3rem); font-weight: 900;
+      letter-spacing: -.02em; color: var(--white); line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .sec-sub {
+      font-size: 16px; color: rgba(200,223,240,.60);
+      max-width: 540px; margin-bottom: 56px;
+    }
+
+    /* ════════════════════════════════════════
+       OVERVIEW — animated pipeline
+    ════════════════════════════════════════ */
+    .overview { background: var(--bg2); }
+
+    .pipeline {
+      display: flex; align-items: center; gap: 0;
+      overflow-x: auto; padding-bottom: 8px;
+      max-width: 1100px;
+    }
+    .pipeline::-webkit-scrollbar { height: 3px; }
+
+    .pipe-node {
+      flex-shrink: 0; width: 160px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      padding: 28px 20px 24px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--glass); position: relative;
+      transition: border-color .3s, background .3s;
+      cursor: default;
+    }
+    .pipe-node:hover {
+      border-color: var(--cyan);
+      background: rgba(0,212,255,.10);
+      box-shadow: 0 0 30px rgba(0,212,255,.15);
+    }
+    .pipe-node .p-icon { font-size: 32px; }
+    .pipe-node .p-name { font-size: 13px; font-weight: 700; color: var(--white); text-align: center; }
+    .pipe-node .p-sub  { font-size: 11px; color: rgba(200,223,240,.50); text-align: center; line-height: 1.5; }
+
+    .pipe-arrow {
+      flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      width: 56px;
+    }
+    .pipe-arrow-line {
+      width: 40px; height: 1px; background: var(--border); position: relative;
+      overflow: hidden;
+    }
+    .pipe-arrow-line::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      animation: flow 2s linear infinite;
+    }
+    @keyframes flow { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+    .pipe-arrow-head {
+      width: 0; height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid var(--border);
+      margin-left: 40px; margin-top: -4px;
+    }
+    .pipe-arrow span { font-size: 10px; color: rgba(200,223,240,.40); white-space: nowrap; }
+
+    /* ════════════════════════════════════════
+       RESEARCH DIRECTIONS — hex grid
+    ════════════════════════════════════════ */
+    .directions { background: var(--bg); }
+
+    .dir-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap: 2px;
+      max-width: 1100px;
+    }
+
+    .dir-card {
+      position: relative; padding: 36px 28px;
+      background: var(--bg2); overflow: hidden;
+      cursor: default; transition: background .3s;
+    }
+    .dir-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,.08), transparent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .dir-card:hover { background: #071628; }
+    .dir-card:hover::before { opacity: 1; }
+
+    .dir-card .corner {
+      position: absolute; top: 0; left: 0;
+      width: 40px; height: 40px;
+      border-top: 2px solid var(--cyan);
+      border-left: 2px solid var(--cyan);
+      opacity: 0; transition: opacity .3s;
+    }
+    .dir-card:hover .corner { opacity: 1; }
+
+    .dir-num {
+      font-size: 11px; font-weight: 800; letter-spacing: .14em;
+      color: var(--cyan); margin-bottom: 16px;
+    }
+    .dir-icon { font-size: 36px; margin-bottom: 14px; line-height: 1; }
+    .dir-card h3 { font-size: 18px; font-weight: 800; color: var(--white); margin-bottom: 10px; }
+    .dir-card p  { font-size: 13.5px; color: rgba(200,223,240,.65); line-height: 1.7; margin-bottom: 18px; }
+
+    .dir-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .dir-pill {
+      padding: 3px 10px; border-radius: 2px; font-size: 11.5px;
+      border: 1px solid rgba(0,212,255,.22);
+      color: rgba(0,212,255,.70); background: rgba(0,212,255,.05);
+    }
+
+    /* ════════════════════════════════════════
+       STATS COUNTER BAND
+    ════════════════════════════════════════ */
+    .stats-band {
+      background: linear-gradient(90deg, #040f1e, #060d1c, #040f1e);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: clamp(40px,6vw,60px) clamp(16px,5vw,80px);
+    }
+    .stats-inner {
+      display: flex; justify-content: space-around; flex-wrap: wrap; gap: 32px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      display: block; font-size: clamp(36px,5vw,64px); font-weight: 900;
+      line-height: 1; letter-spacing: -.04em;
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 13px; color: rgba(200,223,240,.50); letter-spacing: .06em; margin-top: 6px; }
+
+    /* ════════════════════════════════════════
+       CURRICULUM — dark table
+    ════════════════════════════════════════ */
+    .curriculum { background: var(--bg2); }
+
+    .cur-tabs {
+      display: flex; gap: 2px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .cur-tab {
+      padding: 10px 24px; font-size: 13px; font-weight: 700;
+      border: 1px solid var(--border); cursor: pointer;
+      background: transparent; color: rgba(200,223,240,.55);
+      transition: all .2s;
+    }
+    .cur-tab:hover { color: var(--cyan); border-color: var(--cyan); }
+    .cur-tab.active {
+      background: rgba(0,212,255,.10); color: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 20px rgba(0,212,255,.12);
+    }
+
+    .cur-panel { display: none; animation: fadein .3s ease; }
+    .cur-panel.active { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1px; }
+    @keyframes fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    .cur-cell {
+      padding: 18px 20px; background: rgba(255,255,255,.025);
+      border-left: 2px solid transparent;
+      transition: border-color .2s, background .2s;
+    }
+    .cur-cell:hover { border-color: var(--cyan); background: rgba(0,212,255,.05); }
+    .cur-cell .c-cat { font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--cyan); margin-bottom: 6px; }
+    .cur-cell .c-name { font-size: 14px; color: var(--white); font-weight: 600; }
+
+    /* ════════════════════════════════════════
+       TRAINING PATH — timeline
+    ════════════════════════════════════════ */
+    .training { background: var(--bg); }
+
+    .timeline {
+      position: relative; max-width: 900px;
+      padding-left: 48px;
+    }
+    .timeline::before {
+      content: ''; position: absolute; left: 15px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--cyan), var(--blue), var(--purple), transparent);
+    }
+
+    .tl-item {
+      position: relative; margin-bottom: 52px;
+      opacity: 0; transform: translateX(-20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .tl-item.visible { opacity: 1; transform: translateX(0); }
+
+    .tl-dot {
+      position: absolute; left: -40px; top: 4px;
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--cyan); background: var(--bg);
+      box-shadow: 0 0 12px rgba(0,212,255,.5);
+    }
+    .tl-dot::after {
+      content: ''; position: absolute; inset: 3px;
+      border-radius: 50%; background: var(--cyan);
+      animation: pulse-dot 2s ease infinite;
+    }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .tl-phase {
+      font-size: 11px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 6px;
+    }
+    .tl-title { font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+    .tl-body  { font-size: 14px; color: rgba(200,223,240,.65); max-width: 560px; }
+
+    .tl-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .tl-tag  {
+      padding: 4px 12px; border-radius: 2px; font-size: 12px;
+      background: rgba(0,212,255,.07); border: 1px solid rgba(0,212,255,.20);
+      color: rgba(0,212,255,.80);
+    }
+
+    /* ════════════════════════════════════════
+       CAREER GRID
+    ════════════════════════════════════════ */
+    .career { background: var(--bg2); }
+
+    .career-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap: 16px; max-width: 1100px;
+    }
+
+    .career-card {
+      padding: 28px; border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      position: relative; overflow: hidden;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .career-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,.06), transparent 60%);
+      opacity: 0; transition: opacity .3s;
+    }
+    .career-card:hover { border-color: var(--cyan); box-shadow: 0 0 30px rgba(0,212,255,.12); }
+    .career-card:hover::after { opacity: 1; }
+
+    .career-card .c-emoji  { font-size: 30px; margin-bottom: 14px; }
+    .career-card h3        { font-size: 16px; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+    .career-card p         { font-size: 13px; color: rgba(200,223,240,.60); margin-bottom: 14px; line-height: 1.65; }
+    .career-card ul        { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .career-card li        { font-size: 12.5px; color: rgba(200,223,240,.50); padding-left: 12px; position: relative; }
+    .career-card li::before{ content:'▸'; position:absolute; left:0; color:var(--cyan); font-size:10px; top:2px; }
+
+    /* ════════════════════════════════════════
+       CTA BAND
+    ════════════════════════════════════════ */
+    .cta-band {
+      text-align: center;
+      padding: clamp(80px,10vw,120px) clamp(16px,5vw,80px);
+      background: var(--bg);
+      position: relative; overflow: hidden;
+    }
+    .cta-band::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 80% at 50% 50%, rgba(0,102,255,.12), transparent 70%);
+    }
+    .cta-band h2 {
+      font-size: clamp(2rem,5vw,3.5rem); font-weight: 900;
+      color: var(--white); letter-spacing: -.03em; margin-bottom: 16px;
+      position: relative;
+    }
+    .cta-band p {
+      font-size: 17px; color: rgba(200,223,240,.65);
+      max-width: 500px; margin: 0 auto 36px; position: relative;
+    }
+
+    /* ════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════ */
+    .footer {
+      background: #01060e;
+      border-top: 1px solid var(--border);
+      padding: 28px clamp(16px,5vw,80px);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+      font-size: 12.5px; color: rgba(200,223,240,.35);
+    }
+    .footer a { color: rgba(0,212,255,.60); transition: color .2s; }
+    .footer a:hover { color: var(--cyan); }
+
+    /* ════════════════════════════════════════
+       GLITCH EFFECT
+    ════════════════════════════════════════ */
+    .glitch { position: relative; display: inline-block; }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      background: transparent;
+      clip-path: inset(0);
+    }
+    .glitch::before {
+      color: var(--cyan); left: 2px; top: 0;
+      animation: glitch1 3s infinite linear;
+    }
+    .glitch::after {
+      color: var(--purple); left: -2px; top: 0;
+      animation: glitch2 3s infinite linear;
+    }
+    @keyframes glitch1 {
+      0%,90%,100%  { clip-path: inset(50% 0 50% 0); opacity: 0; }
+      91%           { clip-path: inset(10% 0 80% 0); opacity: .8; }
+      93%           { clip-path: inset(60% 0 20% 0); opacity: .8; }
+      95%           { clip-path: inset(30% 0 60% 0); opacity: .8; }
+      97%           { clip-path: inset(80% 0 5%  0); opacity: .8; }
+    }
+    @keyframes glitch2 {
+      0%,85%,100%  { clip-path: inset(50% 0 50% 0); opacity: 0; }
+      86%           { clip-path: inset(80% 0 5%  0); opacity: .7; }
+      88%           { clip-path: inset(20% 0 70% 0); opacity: .7; }
+      90%           { clip-path: inset(5%  0 85% 0); opacity: .7; }
+      92%           { clip-path: inset(50% 0 40% 0); opacity: .7; }
+    }
+
+    /* ════════════════════════════════════════
+       SCAN LINE OVERLAY
+    ════════════════════════════════════════ */
+    .scanline {
+      position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px
+      );
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .hero-floats { position: static; flex-direction: row; flex-wrap: wrap; margin-top: 40px; }
+      .nav { display: none; }
+      .header-cta { display: none; }
+      .pipeline { gap: 0; }
+    }
+
+    /* ════════════════════════════════════════
+       TYPEWRITER CURSOR
+    ════════════════════════════════════════ */
+    .typewriter::after {
+      content: '|'; color: var(--cyan);
+      animation: blink .8s step-end infinite;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scan line -->
+<div class="scanline" aria-hidden="true"></div>
+
+<!-- ──────────────────── HEADER ──────────────────── -->
+<header class="header" id="top">
+  <div class="logo">
+    <div class="logo-hex">
+      <svg viewBox="0 0 32 32" fill="none">
+        <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
+          stroke="rgba(0,212,255,.5)" stroke-width="1.2" fill="none"/>
+      </svg>
+      <span>🚦</span>
+    </div>
+    <span>交通信息工程及控制</span>
+  </div>
+
+  <nav class="nav" aria-label="导航">
+    <a href="#overview">专业概览</a>
+    <a href="#directions">研究方向</a>
+    <a href="#curriculum">课程体系</a>
+    <a href="#training">培养路径</a>
+    <a href="#career">就业发展</a>
+  </nav>
+
+  <a class="header-cta" href="#career">探索未来</a>
+</header>
+
+<!-- ──────────────────── HERO ──────────────────── -->
+<section class="hero" id="hero-top" aria-labelledby="hero-h1">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-grid-overlay" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-tag">Traffic Information Engineering &amp; Control · 二级学科方向</div>
+
+    <h1 id="hero-h1">
+      <span class="glitch" data-text="交通信息工程">交通信息工程</span>
+      <span class="grad">及控制</span>
+      <span class="en">Traffic Information Engineering &amp; Control</span>
+    </h1>
+
+    <p class="hero-desc" id="hero-desc">
+      融合交通工程、信息科学与自动控制，从道路感知到城市大脑，
+      研究交通系统的感知、传输、分析与控制全链路技术体系。
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn-primary" href="#overview">深入了解</a>
+      <a class="btn-outline" href="#directions">研究方向</a>
+    </div>
+  </div>
+
+  <div class="hero-floats" aria-label="专业核心数字">
+    <div class="hero-float">
+      <strong><span class="counter" data-target="4">0</span>+</strong>
+      <span>核心研究方向</span>
+    </div>
+    <div class="hero-float">
+      <strong><span class="counter" data-target="20">0</span>+</strong>
+      <span>专业核心课程</span>
+    </div>
+    <div class="hero-float">
+      <strong><span class="counter" data-target="95">0</span>%</strong>
+      <span>就业/深造率</span>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── OVERVIEW ──────────────────── -->
+<section id="overview" class="section overview">
+  <div class="reveal">
+    <div class="sec-label">System Overview</div>
+    <h2 class="sec-title">从道路现场到城市大脑</h2>
+    <p class="sec-sub">完整的交通信息工程链路——感知、传输、融合、决策、控制</p>
+  </div>
+
+  <div class="pipeline reveal" style="transition-delay:.1s">
+    <div class="pipe-node">
+      <div class="p-icon">📡</div>
+      <div class="p-name">数据感知</div>
+      <div class="p-sub">摄像机·雷达·地磁·GPS·手机信令</div>
+    </div>
+    <div class="pipe-arrow">
+      <div class="pipe-arrow-line"></div>
+      <div class="pipe-arrow-head"></div>
+      <span>采集</span>
+    </div>
+    <div class="pipe-node">
+      <div class="p-icon">🌐</div>
+      <div class="p-name">通信传输</div>
+      <div class="p-sub">5G·C-V2X·光纤·边缘计算节点</div>
+    </div>
+    <div class="pipe-arrow">
+      <div class="pipe-arrow-line"></div>
+      <div class="pipe-arrow-head"></div>
+      <span>传输</span>
+    </div>
+    <div class="pipe-node">
+      <div class="p-icon">🧮</div>
+      <div class="p-name">数据处理</div>
+      <div class="p-sub">清洗融合·时空分析·深度学习</div>
+    </div>
+    <div class="pipe-arrow">
+      <div class="pipe-arrow-line"></div>
+      <div class="pipe-arrow-head"></div>
+      <span>分析</span>
+    </div>
+    <div class="pipe-node">
+      <div class="p-icon">🧠</div>
+      <div class="p-name">决策建模</div>
+      <div class="p-sub">交通流预测·事件识别·需求估计</div>
+    </div>
+    <div class="pipe-arrow">
+      <div class="pipe-arrow-line"></div>
+      <div class="pipe-arrow-head"></div>
+      <span>决策</span>
+    </div>
+    <div class="pipe-node">
+      <div class="p-icon">🚦</div>
+      <div class="p-name">控制优化</div>
+      <div class="p-sub">信号控制·路径诱导·应急调度</div>
+    </div>
+    <div class="pipe-arrow">
+      <div class="pipe-arrow-line"></div>
+      <div class="pipe-arrow-head"></div>
+      <span>输出</span>
+    </div>
+    <div class="pipe-node">
+      <div class="p-icon">🏙️</div>
+      <div class="p-name">智慧城市</div>
+      <div class="p-sub">城市大脑·MaaS·车路协同应用</div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── STATS ──────────────────── -->
+<div class="stats-band" aria-label="专业核心指标">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <span class="stat-num"><span class="counter" data-target="60">0</span>+年</span>
+      <div class="stat-label">学科发展历史</div>
+    </div>
+    <div class="stat-item reveal" style="transition-delay:.1s">
+      <span class="stat-num"><span class="counter" data-target="100">0</span>+</span>
+      <div class="stat-label">国内开设高校</div>
+    </div>
+    <div class="stat-item reveal" style="transition-delay:.2s">
+      <span class="stat-num"><span class="counter" data-target="10000">0</span>+</span>
+      <div class="stat-label">年均就业需求（人）</div>
+    </div>
+    <div class="stat-item reveal" style="transition-delay:.3s">
+      <span class="stat-num">TOP <span class="counter" data-target="3">0</span></span>
+      <div class="stat-label">热门交叉学科方向</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────── DIRECTIONS ──────────────────── -->
+<section id="directions" class="section directions">
+  <div class="reveal">
+    <div class="sec-label">Research Directions</div>
+    <h2 class="sec-title">四大核心研究方向</h2>
+    <p class="sec-sub">覆盖交通信息全链路，连接感知、智能与控制</p>
+  </div>
+
+  <div class="dir-grid">
+    <div class="dir-card reveal" style="transition-delay:.05s">
+      <div class="corner"></div>
+      <div class="dir-num">DIRECTION · 01</div>
+      <div class="dir-icon">📡</div>
+      <h3>交通信息感知与采集</h3>
+      <p>研究多源异构交通数据的高效获取方法，覆盖视觉检测、雷达感知、卫星定位与物联网终端等技术路线，构建高精度、低延时的交通感知网络。</p>
+      <div class="dir-pills">
+        <span class="dir-pill">计算机视觉</span>
+        <span class="dir-pill">毫米波雷达</span>
+        <span class="dir-pill">多源融合</span>
+        <span class="dir-pill">C-V2X</span>
+      </div>
+    </div>
+
+    <div class="dir-card reveal" style="transition-delay:.1s">
+      <div class="corner"></div>
+      <div class="dir-num">DIRECTION · 02</div>
+      <div class="dir-icon">🧠</div>
+      <h3>交通数据智能分析</h3>
+      <p>综合运用统计建模、机器学习与时空图神经网络，实现交通流预测、拥堵溯源、事件检测与出行需求估计，支撑城市交通态势感知。</p>
+      <div class="dir-pills">
+        <span class="dir-pill">时空预测</span>
+        <span class="dir-pill">图神经网络</span>
+        <span class="dir-pill">大数据</span>
+        <span class="dir-pill">强化学习</span>
+      </div>
+    </div>
+
+    <div class="dir-card reveal" style="transition-delay:.15s">
+      <div class="corner"></div>
+      <div class="dir-num">DIRECTION · 03</div>
+      <div class="dir-icon">⚙️</div>
+      <h3>交通控制理论与应用</h3>
+      <p>以自动控制、运筹优化与强化学习为方法论，研究信号配时、区域协调控制、公交优先、高速匝道控制与应急交通组织的最优化策略。</p>
+      <div class="dir-pills">
+        <span class="dir-pill">信号控制</span>
+        <span class="dir-pill">MPC 控制</span>
+        <span class="dir-pill">绿波协调</span>
+        <span class="dir-pill">仿真优化</span>
+      </div>
+    </div>
+
+    <div class="dir-card reveal" style="transition-delay:.2s">
+      <div class="corner"></div>
+      <div class="dir-num">DIRECTION · 04</div>
+      <div class="dir-icon">🚗</div>
+      <h3>车路协同与智能交通</h3>
+      <p>面向自动驾驶与智能网联汽车，研究 V2X 通信协议、路侧边缘计算、协同感知与决策、数字孪生仿真验证及 MaaS 出行服务系统。</p>
+      <div class="dir-pills">
+        <span class="dir-pill">V2X</span>
+        <span class="dir-pill">数字孪生</span>
+        <span class="dir-pill">自动驾驶</span>
+        <span class="dir-pill">MaaS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── CURRICULUM ──────────────────── -->
+<section id="curriculum" class="section curriculum">
+  <div class="reveal">
+    <div class="sec-label">Curriculum</div>
+    <h2 class="sec-title">课程体系</h2>
+    <p class="sec-sub">四大模块，系统构建交叉型知识能力框架</p>
+  </div>
+
+  <div class="cur-tabs reveal" style="transition-delay:.1s" role="tablist" aria-label="课程模块">
+    <button class="cur-tab active" data-tab="transport" role="tab" aria-selected="true">交通基础</button>
+    <button class="cur-tab" data-tab="info" role="tab" aria-selected="false">信息技术</button>
+    <button class="cur-tab" data-tab="control" role="tab" aria-selected="false">控制与智能</button>
+    <button class="cur-tab" data-tab="apply" role="tab" aria-selected="false">综合应用</button>
+  </div>
+
+  <div id="tab-transport" class="cur-panel active reveal" style="transition-delay:.15s">
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">交通工程学</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">交通流理论</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">交通规划与管理</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">道路交通安全</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">运输组织学</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">城市公共交通</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">交通系统仿真</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">综合运输体系</div></div>
+  </div>
+
+  <div id="tab-info" class="cur-panel">
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">程序设计基础</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">数据结构与算法</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">数据库系统</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">计算机网络</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">交通大数据分析</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">GIS 与时空分析</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">嵌入式系统开发</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">通信原理</div></div>
+  </div>
+
+  <div id="tab-control" class="cur-panel">
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">自动控制原理</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">交通信号控制</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">机器学习基础</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">深度学习与应用</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">强化学习控制</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">智能优化算法</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">数字信号处理</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">系统辨识与估计</div></div>
+  </div>
+
+  <div id="tab-apply" class="cur-panel">
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">智能交通系统</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">车路协同技术</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">综合工程实践</div></div>
+    <div class="cur-cell"><div class="c-cat">CORE</div><div class="c-name">毕业设计 / 论文</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">城市交通治理</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">交通仿真与评估</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">科研方法与写作</div></div>
+    <div class="cur-cell"><div class="c-cat">ELEC</div><div class="c-name">前沿技术专题</div></div>
+  </div>
+</section>
+
+<!-- ──────────────────── TRAINING ──────────────────── -->
+<section id="training" class="section training">
+  <div class="reveal">
+    <div class="sec-label">Training Path</div>
+    <h2 class="sec-title">四阶培养路径</h2>
+    <p class="sec-sub">从理论奠基到独立科研，系统进阶</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">PHASE 01 · 基础构建</div>
+      <div class="tl-title">理论知识体系搭建</div>
+      <div class="tl-body">夯实交通工程、数学建模、编程设计与自动控制原理等核心理论，建立跨学科思维框架，完成工程认知实习与专业导论学习。</div>
+      <div class="tl-tags">
+        <span class="tl-tag">交通工程基础</span>
+        <span class="tl-tag">数学建模</span>
+        <span class="tl-tag">Python / C++</span>
+        <span class="tl-tag">工程认知</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">PHASE 02 · 数据与算法</div>
+      <div class="tl-title">数据驱动能力训练</div>
+      <div class="tl-body">开展交通调查实验、大数据处理与可视化、机器学习建模实训，完成从原始数据到可用洞察的完整工程流程训练。</div>
+      <div class="tl-tags">
+        <span class="tl-tag">交通调查实验</span>
+        <span class="tl-tag">数据清洗</span>
+        <span class="tl-tag">机器学习</span>
+        <span class="tl-tag">SUMO 仿真</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">PHASE 03 · 系统与控制</div>
+      <div class="tl-title">工程系统开发实践</div>
+      <div class="tl-body">结合真实路网场景进行信号控制系统开发与仿真验证，搭建交通信息平台原型，参与校企联合项目与竞赛，积累真实工程经验。</div>
+      <div class="tl-tags">
+        <span class="tl-tag">信号控制开发</span>
+        <span class="tl-tag">平台原型</span>
+        <span class="tl-tag">联合仿真</span>
+        <span class="tl-tag">竞赛</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">PHASE 04 · 科研与创新</div>
+      <div class="tl-title">独立成果输出</div>
+      <div class="tl-body">参与省部级课题、企业横向项目或国际合作，以高水平论文、专利或工程项目完成独立创新成果，为学术深造或行业就业做好充分准备。</div>
+      <div class="tl-tags">
+        <span class="tl-tag">科研课题</span>
+        <span class="tl-tag">SCI / EI 论文</span>
+        <span class="tl-tag">专利申请</span>
+        <span class="tl-tag">国际合作</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── CAREER ──────────────────── -->
+<section id="career" class="section career">
+  <div class="reveal">
+    <div class="sec-label">Career Development</div>
+    <h2 class="sec-title">就业与发展方向</h2>
+    <p class="sec-sub">政府、科研、产业、学术——多轨道发展路径</p>
+  </div>
+
+  <div class="career-grid">
+    <div class="career-card reveal" style="transition-delay:.05s">
+      <div class="c-emoji">🏛️</div>
+      <h3>政府交通管理机构</h3>
+      <p>参与城市智慧交管平台建设与运营、交通政策研究与绩效评估。</p>
+      <ul>
+        <li>交通运输局 / 公安交管局</li>
+        <li>城市交通指挥中心</li>
+        <li>交通运输部直属单位</li>
+      </ul>
+    </div>
+
+    <div class="career-card reveal" style="transition-delay:.1s">
+      <div class="c-emoji">🏗️</div>
+      <h3>交通规划设计院</h3>
+      <p>承担交通信息系统规划、智慧道路设计及交通组织优化方案制定。</p>
+      <ul>
+        <li>综合交通规划研究院</li>
+        <li>城市轨道交通设计院</li>
+        <li>公路勘察设计研究院</li>
+      </ul>
+    </div>
+
+    <div class="career-card reveal" style="transition-delay:.15s">
+      <div class="c-emoji">💻</div>
+      <h3>智能交通科技企业</h3>
+      <p>从事交通大数据产品、信号控制系统与车路协同平台研发。</p>
+      <ul>
+        <li>华为 / 阿里 / 滴滴 / 百度</li>
+        <li>海信 / 大华 / 千方科技</li>
+        <li>各地智慧城市解决方案商</li>
+      </ul>
+    </div>
+
+    <div class="career-card reveal" style="transition-delay:.2s">
+      <div class="c-emoji">🚆</div>
+      <h3>轨道与综合运输行业</h3>
+      <p>支撑城市轨道、铁路和物流的运营调度与信息系统建设。</p>
+      <ul>
+        <li>城市地铁公司</li>
+        <li>铁路局集团</li>
+        <li>港口与现代物流平台</li>
+      </ul>
+    </div>
+
+    <div class="career-card reveal" style="transition-delay:.25s">
+      <div class="c-emoji">🔬</div>
+      <h3>科研院所</h3>
+      <p>在交通运输、控制或计算机领域的国家级科研平台从事攻关研究。</p>
+      <ul>
+        <li>交通运输研究院</li>
+        <li>中科院相关研究所</li>
+        <li>国家重点实验室 / 工程中心</li>
+      </ul>
+    </div>
+
+    <div class="career-card reveal" style="transition-delay:.3s">
+      <div class="c-emoji">🎓</div>
+      <h3>学术深造</h3>
+      <p>继续攻读博士或出国深造，投身学术科研与高校教学岗位。</p>
+      <ul>
+        <li>国内顶校博士项目</li>
+        <li>海外联培 / 全额奖学金</li>
+        <li>博士后 → 高校教职</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── CTA ──────────────────── -->
+<section class="cta-band">
+  <h2 class="reveal">连接<span style="color:var(--cyan)">数据</span>与<span style="color:var(--purple)">城市智慧</span></h2>
+  <p class="reveal" style="transition-delay:.1s">
+    交通信息工程及控制是智慧交通时代最具发展潜力的学科方向之一，
+    欢迎探索这一融合前沿技术与城市治理的复合型学科。
+  </p>
+  <a class="btn-primary reveal" href="#overview" style="transition-delay:.2s;display:inline-block">开始探索 →</a>
+</section>
+
+<!-- ──────────────────── FOOTER ──────────────────── -->
+<footer class="footer">
+  <span>交通信息工程及控制 — 专业介绍</span>
+  <a href="#top">↑ 返回顶部</a>
+</footer>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+/* ── 1. Hero particle network canvas ── */
+(function(){
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes = [], animId;
+
+  function resize(){
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', ()=>{ resize(); init(); });
+  resize();
+
+  function rand(a,b){ return a + Math.random()*(b-a); }
+
+  function init(){
+    nodes = [];
+    const count = Math.floor(W*H/8000);
+    for(let i=0;i<count;i++){
+      nodes.push({
+        x: rand(0,W), y: rand(0,H),
+        vx: rand(-0.4,0.4), vy: rand(-0.4,0.4),
+        r: rand(1.5,3),
+        color: ['#00d4ff','#0066ff','#7b2fff','#00ff88'][Math.floor(Math.random()*4)],
+        alpha: rand(0.4,0.9)
+      });
+    }
+  }
+  init();
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    /* connections */
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<160){
+          const a=(1-d/160)*0.35;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x,nodes[i].y);
+          ctx.lineTo(nodes[j].x,nodes[j].y);
+          ctx.strokeStyle=`rgba(0,180,255,${a})`;
+          ctx.lineWidth=0.8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* nodes */
+    nodes.forEach(n=>{
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle=n.color;
+      ctx.globalAlpha=n.alpha;
+      ctx.fill();
+      ctx.globalAlpha=1;
+
+      /* glow */
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r*3,0,Math.PI*2);
+      const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*3);
+      g.addColorStop(0,'rgba(0,212,255,.15)');
+      g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;
+      ctx.fill();
+
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>W) n.vx*=-1;
+      if(n.y<0||n.y>H) n.vy*=-1;
+    });
+
+    animId=requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── 2. Scroll reveal ── */
+(function(){
+  const els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.tl-item');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  },{ threshold: 0.12 });
+  els.forEach(el=>io.observe(el));
+})();
+
+/* ── 3. Counter animation ── */
+(function(){
+  const counters = document.querySelectorAll('.counter');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el=e.target, target=+el.dataset.target;
+      let start=null;
+      const dur = target>1000 ? 2000 : 1400;
+      function step(ts){
+        if(!start) start=ts;
+        const prog=Math.min((ts-start)/dur,1);
+        const ease=1-Math.pow(1-prog,3);
+        el.textContent=Math.floor(ease*target).toLocaleString();
+        if(prog<1) requestAnimationFrame(step);
+        else el.textContent=target.toLocaleString();
+      }
+      requestAnimationFrame(step);
+      io.unobserve(el);
+    });
+  },{ threshold:0.5 });
+  counters.forEach(c=>io.observe(c));
+})();
+
+/* ── 4. Curriculum tabs ── */
+(function(){
+  const tabs = document.querySelectorAll('.cur-tab');
+  const panels = document.querySelectorAll('.cur-panel');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabs.forEach(t=>{ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      panels.forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
+    });
+  });
+})();
+
+/* ── 5. Typewriter effect on hero desc ── */
+(function(){
+  const el = document.getElementById('hero-desc');
+  const text = el.textContent.trim();
+  el.textContent = '';
+  el.classList.add('typewriter');
+  let i=0;
+  function type(){
+    if(i<text.length){
+      el.textContent+=text[i++];
+      setTimeout(type, i<20 ? 60 : 30);
+    } else {
+      el.classList.remove('typewriter');
+    }
+  }
+  setTimeout(type, 800);
+})();
+
+/* ── 6. Header active nav on scroll ── */
+(function(){
+  const sections = document.querySelectorAll('section[id]');
+  const links    = document.querySelectorAll('.nav a');
+  window.addEventListener('scroll',()=>{
+    let cur='';
+    sections.forEach(s=>{
+      if(window.scrollY >= s.offsetTop-100) cur=s.id;
+    });
+    links.forEach(a=>{
+      a.style.color = a.getAttribute('href')==='#'+cur ? 'var(--cyan)' : '';
+      a.style.borderColor = a.getAttribute('href')==='#'+cur ? 'var(--cyan)' : 'transparent';
+    });
+  });
+})();
+</script>
+</body>
+</html>
