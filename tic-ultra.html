@@ -6,573 +6,509 @@
 <title>交通信息工程及控制 | Traffic Information Engineering & Control</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
-/* ═══════ TOKENS ═══════ */
-:root {
-  --blue:   #3b82f6;
-  --indigo: #6366f1;
-  --cyan:   #06b6d4;
-  --green:  #10b981;
-  --amber:  #f59e0b;
-  --purple: #8b5cf6;
-
-  --bg:   #090f1a;
-  --bg1:  #0d1520;
-  --bg2:  #111827;
-  --surf: rgba(255,255,255,.04);
-  --bdr:  rgba(255,255,255,.08);
-  --bdr2: rgba(255,255,255,.12);
-
-  --t1: #f1f5f9;   /* headings */
-  --t2: #94a3b8;   /* body */
-  --t3: #475569;   /* muted */
-  --acc: #3b82f6;
-
-  --r:  10px;
-  --rL: 16px;
-
-  /* spacing scale */
-  --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px;
-  --s5: 48px; --s6: 64px; --s7: 96px; --s8: 128px;
+/* ═══ TOKENS ═══ */
+:root{
+  --blue:#3b82f6; --indigo:#6366f1; --cyan:#06b6d4;
+  --green:#10b981; --purple:#8b5cf6; --amber:#f59e0b;
+  --bg:#07101d; --bg1:#0b1628; --bg2:#0f1e36;
+  --surf:rgba(255,255,255,.04); --bdr:rgba(255,255,255,.07); --bdr2:rgba(255,255,255,.12);
+  --t1:#f0f6ff; --t2:#8fa3bc; --t3:#3d5068;
+  --r:12px; --rL:18px;
 }
-
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
-html { scroll-behavior:smooth }
-body {
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
   font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg); color:var(--t2); font-size:17px;
+  line-height:1.75; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(59,130,246,.3)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--blue),var(--purple));border-radius:3px}
+
+/* ═══ LOADER ═══ */
+#loader{
+  position:fixed;inset:0;z-index:9999;
   background:var(--bg);
-  color:var(--t2);
-  font-size:17px;
-  line-height:1.75;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;
 }
-a { color:inherit; text-decoration:none }
-::selection { background:rgba(59,130,246,.3) }
-::-webkit-scrollbar { width:4px }
-::-webkit-scrollbar-track { background:var(--bg) }
-::-webkit-scrollbar-thumb { background:var(--blue); border-radius:4px }
+.loader-logo{font-size:36px;font-weight:900;letter-spacing:-.04em;color:var(--t1);opacity:0}
+.loader-bar-wrap{width:280px;height:1px;background:rgba(255,255,255,.1);overflow:hidden}
+.loader-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .05s linear}
+.loader-pct{font-size:13px;font-weight:600;color:var(--t3);letter-spacing:.1em}
 
-/* ═══════ NAV ═══════ */
-nav {
-  position:fixed; inset:0 0 auto; z-index:100;
-  height:60px;
-  display:flex; align-items:center; justify-content:space-between; gap:var(--s4);
-  padding:0 clamp(var(--s3),5vw,var(--s7));
-  background:rgba(9,15,26,.8);
-  border-bottom:1px solid var(--bdr);
-  backdrop-filter:blur(20px) saturate(160%);
+/* ═══ CURSOR ═══ */
+#cursor{
+  position:fixed;width:10px;height:10px;border-radius:50%;
+  background:var(--blue);pointer-events:none;z-index:8000;
+  transform:translate(-50%,-50%);
+  transition:transform .08s ease,background .2s;
+  mix-blend-mode:screen;
 }
-.nav-logo {
-  display:flex; align-items:center; gap:10px;
-  font-size:15px; font-weight:700; color:var(--t1);
-  white-space:nowrap; letter-spacing:-.01em;
+#cursor-ring{
+  position:fixed;width:36px;height:36px;border-radius:50%;
+  border:1.5px solid rgba(59,130,246,.5);pointer-events:none;z-index:7999;
+  transform:translate(-50%,-50%);
+  transition:width .3s ease,height .3s ease,border-color .3s;
 }
-.nav-logo-mark {
-  width:32px; height:32px; border-radius:8px;
+#cursor.hovered{transform:translate(-50%,-50%) scale(3);background:rgba(59,130,246,.3)}
+#cursor-ring.hovered{width:56px;height:56px;border-color:rgba(59,130,246,.8)}
+
+/* ═══ NAV ═══ */
+nav{
+  position:fixed;inset:0 0 auto;z-index:500;
+  height:62px;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:0 clamp(20px,5vw,80px);
+  background:rgba(7,16,29,.75);border-bottom:1px solid var(--bdr);
+  backdrop-filter:blur(24px) saturate(160%);
+}
+.nav-logo{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:800;color:var(--t1);white-space:nowrap}
+.nav-mark{
+  width:34px;height:34px;border-radius:9px;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#1d4ed8,#06b6d4);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px; flex-shrink:0;
-  box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 4px 12px rgba(59,130,246,.4);
+  box-shadow:0 0 0 1px rgba(255,255,255,.1),0 4px 16px rgba(59,130,246,.5);
 }
-.nav-links {
-  display:flex; gap:var(--s1);
-  list-style:none;
+.nav-links{display:flex;gap:4px;list-style:none}
+.nav-links a{
+  padding:6px 13px;border-radius:7px;font-size:14px;font-weight:500;
+  color:var(--t3);transition:color .2s,background .2s;
 }
-.nav-links a {
-  padding:6px 12px; border-radius:6px; font-size:14px; font-weight:500;
-  color:var(--t3); transition:color .15s, background .15s;
+.nav-links a:hover,.nav-links a.on{color:var(--t1);background:rgba(255,255,255,.06)}
+.nav-cta{
+  padding:9px 22px;border-radius:9px;font-size:14px;font-weight:700;
+  background:var(--blue);color:#fff;
+  box-shadow:0 0 0 1px rgba(59,130,246,.4),0 4px 20px rgba(59,130,246,.4);
+  transition:box-shadow .25s,transform .2s;white-space:nowrap;flex-shrink:0;
 }
-.nav-links a:hover { color:var(--t1); background:rgba(255,255,255,.06) }
-.nav-links a.on    { color:var(--t1) }
-.nav-cta {
-  padding:8px 20px; border-radius:8px;
-  background:var(--blue); color:#fff;
-  font-size:14px; font-weight:600;
-  box-shadow:0 0 0 1px rgba(59,130,246,.5), 0 4px 16px rgba(59,130,246,.35);
-  transition:box-shadow .2s, transform .15s;
-  white-space:nowrap; flex-shrink:0;
-}
-.nav-cta:hover { box-shadow:0 0 0 1px rgba(59,130,246,.7), 0 8px 24px rgba(59,130,246,.5); transform:translateY(-1px) }
-@media(max-width:700px){ .nav-links,.nav-cta{display:none} }
+.nav-cta:hover{box-shadow:0 0 0 1px rgba(59,130,246,.6),0 8px 32px rgba(59,130,246,.6);transform:translateY(-2px)}
+@media(max-width:700px){.nav-links,.nav-cta{display:none}}
 
-/* ═══════ HERO ═══════ */
-.hero {
-  position:relative; min-height:100vh;
-  display:flex; flex-direction:column; justify-content:center; align-items:center;
-  text-align:center;
-  padding:120px clamp(var(--s3),6vw,var(--s8)) var(--s7);
-  overflow:hidden;
+/* ═══ HERO ═══ */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:120px clamp(20px,6vw,100px) 80px;overflow:hidden;
 }
-#heroCanvas {
-  position:absolute; inset:0; width:100%; height:100%;
-  opacity:.55;
-}
-.hero-glow {
-  position:absolute; inset:0; pointer-events:none;
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-glow{
+  position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,.12) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(99,102,241,.08) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(6,182,212,.07) 0%, transparent 70%);
+    radial-gradient(ellipse 80% 60% at 50% 20%,rgba(59,130,246,.14) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 15% 80%,rgba(99,102,241,.10) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 35% at 85% 70%,rgba(6,182,212,.08) 0%,transparent 70%);
 }
-.hero-grid {
-  position:absolute; inset:0; pointer-events:none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size:72px 72px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+.hero-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 20%,transparent 100%);
 }
-.hero-eyebrow {
-  display:inline-flex; align-items:center; gap:8px;
-  padding:6px 16px; border-radius:100px; margin-bottom:var(--s4);
-  background:rgba(59,130,246,.1);
-  border:1px solid rgba(59,130,246,.25);
-  font-size:13px; font-weight:600; letter-spacing:.06em;
-  color:rgba(147,197,253,1); text-transform:uppercase;
-  position:relative;
-}
-.hero-eyebrow::before {
-  content:''; width:6px; height:6px; border-radius:50%;
-  background:#60a5fa; flex-shrink:0;
-  animation:pulse 2s ease infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.hero-inner{position:relative;z-index:2;max-width:1000px;width:100%}
 
-.hero-title {
-  font-size:clamp(3rem,8.5vw,8rem);
-  font-weight:900; letter-spacing:-.04em; line-height:1.0;
-  color:var(--t1); margin-bottom:var(--s3);
-  position:relative;
+.hero-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:8px 20px;border-radius:100px;margin-bottom:36px;
+  background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);
+  font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:rgba(147,197,253,1);
+  /* split-text will animate this */
+  opacity:0;transform:translateY(-16px);
 }
-.hero-title .accent {
-  background:linear-gradient(135deg,#60a5fa 0%,#818cf8 50%,#06b6d4 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  background-clip:text;
-  animation:gradient-shift 6s ease infinite;
-  background-size:300% 300%;
-}
-@keyframes gradient-shift {
-  0%  { background-position:0% 50%   }
-  50% { background-position:100% 50% }
-  100%{ background-position:0% 50%   }
-}
-.hero-en {
-  display:block; margin-top:var(--s2);
-  font-size:clamp(15px,2.2vw,22px); font-weight:400;
-  color:var(--t3); letter-spacing:.03em; line-height:1;
-}
-.hero-body {
-  font-size:clamp(16px,2vw,20px); color:var(--t2); max-width:620px;
-  margin:var(--s4) auto var(--s5); line-height:1.8;
-  position:relative;
-}
-.hero-actions {
-  display:flex; gap:var(--s2); justify-content:center; flex-wrap:wrap;
-  position:relative;
-}
-.btn-lg {
-  display:inline-flex; align-items:center; gap:8px;
-  padding:14px 32px; border-radius:10px; font-size:16px; font-weight:600;
-  transition:all .2s;
-}
-.btn-primary {
-  background:var(--blue); color:#fff;
-  box-shadow:0 0 0 1px rgba(59,130,246,.4), 0 8px 24px rgba(59,130,246,.35);
-}
-.btn-primary:hover {
-  box-shadow:0 0 0 1px rgba(59,130,246,.6), 0 12px 32px rgba(59,130,246,.5);
-  transform:translateY(-2px);
-}
-.btn-secondary {
-  background:rgba(255,255,255,.06); color:var(--t1);
-  border:1px solid var(--bdr2);
-}
-.btn-secondary:hover {
-  background:rgba(255,255,255,.10);
-  border-color:rgba(255,255,255,.2);
-}
-.hero-scroll {
-  position:absolute; bottom:var(--s4); left:50%; transform:translateX(-50%);
-  display:flex; flex-direction:column; align-items:center; gap:8px;
-  font-size:12px; color:var(--t3); letter-spacing:.08em; text-transform:uppercase;
-  animation:float 3s ease infinite;
-}
-@keyframes float { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
-.scroll-line {
-  width:1px; height:40px;
-  background:linear-gradient(to bottom, rgba(255,255,255,.3), transparent);
-}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:#60a5fa;animation:bdot 2s ease infinite;flex-shrink:0}
+@keyframes bdot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(96,165,250,.6)}50%{opacity:.4;box-shadow:0 0 0 4px rgba(96,165,250,0)}}
 
-/* ═══════ MARQUEE ═══════ */
-.marquee-wrap {
-  overflow:hidden; border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr);
-  background:var(--bg1); padding:16px 0;
+.hero-title{
+  font-size:clamp(3.2rem,9vw,9rem);
+  font-weight:900;letter-spacing:-.05em;line-height:.95;
+  color:var(--t1);margin-bottom:16px;
+  clip-path:inset(0);/* for reveal */
 }
-.marquee-track {
-  display:flex; gap:var(--s5); width:max-content;
-  animation:marquee 28s linear infinite;
+.hero-title .word{display:inline-block;overflow:hidden;vertical-align:top}
+.hero-title .char{display:inline-block;transform:translateY(110%);will-change:transform}
+.hero-title .accent{
+  background:linear-gradient(135deg,#60a5fa,#818cf8,#06b6d4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  background-size:200% 200%;animation:grad 6s ease infinite;
 }
-.marquee-track:hover { animation-play-state:paused }
-@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.marquee-item {
-  display:flex; align-items:center; gap:10px;
-  font-size:14px; font-weight:600; color:var(--t3); white-space:nowrap;
+@keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.hero-sub-title{
+  display:block;margin-top:14px;
+  font-size:clamp(14px,2vw,20px);font-weight:400;
+  color:var(--t3);letter-spacing:.04em;font-style:italic;
+  opacity:0;
 }
-.marquee-dot { width:4px; height:4px; border-radius:50%; background:var(--blue); flex-shrink:0 }
+.hero-body{
+  font-size:clamp(16px,2vw,20px);color:var(--t2);max-width:640px;
+  margin:36px auto 48px;line-height:1.85;
+  opacity:0;transform:translateY(20px);
+}
+.hero-actions{
+  display:flex;gap:16px;justify-content:center;flex-wrap:wrap;
+  opacity:0;transform:translateY(20px);
+}
+.btn-hero{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:15px 36px;border-radius:11px;font-size:16px;font-weight:700;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;
+  position:relative;overflow:hidden;
+}
+.btn-hero::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,.15);opacity:0;
+  transition:opacity .25s;border-radius:11px;
+}
+.btn-hero:hover::after{opacity:1}
+.btn-hero:hover{transform:translateY(-3px) scale(1.02)}
+.btn-p{
+  background:linear-gradient(135deg,var(--blue),var(--indigo));color:#fff;
+  box-shadow:0 0 0 1px rgba(99,102,241,.4),0 8px 32px rgba(59,130,246,.45);
+}
+.btn-p:hover{box-shadow:0 0 0 1px rgba(99,102,241,.6),0 16px 48px rgba(59,130,246,.6)}
+.btn-s{
+  background:rgba(255,255,255,.06);color:var(--t1);
+  border:1px solid rgba(255,255,255,.12);
+}
+.btn-s:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.22)}
 
-/* ═══════ SECTION SHELL ═══════ */
-.section {
-  padding:clamp(var(--s7),10vw,var(--s8)) clamp(var(--s3),5vw,var(--s7));
+.hero-scroll{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  font-size:11px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;
+  opacity:0;
 }
-.section-inner { max-width:1120px; margin:0 auto }
-.section-alt { background:var(--bg1) }
+.scroll-bar{
+  width:1px;height:44px;overflow:hidden;
+  background:rgba(255,255,255,.08);border-radius:2px;
+}
+.scroll-bar-inner{
+  width:100%;height:50%;background:linear-gradient(to bottom,var(--blue),var(--cyan));
+  animation:scbar 1.6s ease infinite;
+}
+@keyframes scbar{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
 
-.section-label {
-  display:inline-flex; align-items:center; gap:8px;
-  font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
-  color:var(--blue); margin-bottom:var(--s2);
+/* hero stat floats */
+.hero-stats{
+  position:absolute;right:clamp(20px,4vw,60px);bottom:80px;
+  display:flex;flex-direction:column;gap:16px;z-index:2;
+  opacity:0;transform:translateX(20px);
 }
-.section-label::before { content:''; width:16px; height:2px; background:var(--blue); border-radius:2px }
-.section-title {
-  font-size:clamp(2rem,4.5vw,3.5rem);
-  font-weight:800; letter-spacing:-.03em; color:var(--t1); line-height:1.1;
-  margin-bottom:var(--s2);
+.hstat{
+  padding:18px 22px;min-width:168px;
+  background:rgba(11,22,40,.85);border:1px solid var(--bdr2);
+  border-radius:var(--r);backdrop-filter:blur(16px);
+  position:relative;overflow:hidden;
 }
-.section-body {
-  font-size:clamp(16px,1.8vw,18px); color:var(--t2); max-width:540px; line-height:1.8;
-  margin-bottom:var(--s6);
-}
-.section-head { margin-bottom:var(--s6) }
-
-/* ═══════ PIPELINE ═══════ */
-.pipeline {
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:2px;
-}
-@media(max-width:900px){ .pipeline{ grid-template-columns:repeat(3,1fr) } }
-@media(max-width:560px){ .pipeline{ grid-template-columns:repeat(2,1fr) } }
-.pipe-card {
-  padding:var(--s4) var(--s3); text-align:center;
-  background:var(--surf); border:1px solid var(--bdr);
-  border-radius:var(--r);
-  display:flex; flex-direction:column; align-items:center; gap:var(--s2);
-  transition:border-color .25s, background .25s, transform .25s;
-  cursor:default; position:relative; overflow:hidden;
-}
-.pipe-card::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+.hstat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,var(--blue),var(--cyan));
-  transform:scaleX(0); transition:transform .3s;
 }
-.pipe-card:hover { border-color:rgba(59,130,246,.4); background:rgba(59,130,246,.06); transform:translateY(-4px) }
-.pipe-card:hover::after { transform:scaleX(1) }
-.pipe-num {
-  font-size:11px; font-weight:700; letter-spacing:.12em;
-  color:var(--t3); text-transform:uppercase;
-}
-.pipe-icon { font-size:36px; line-height:1 }
-.pipe-name { font-size:15px; font-weight:700; color:var(--t1) }
-.pipe-desc { font-size:13px; color:var(--t2); line-height:1.6 }
-.pipe-arrow {
-  display:flex; align-items:center; justify-content:center;
-  color:var(--t3); font-size:20px;
-}
-@media(max-width:900px){ .pipe-arrow{display:none} }
+.hstat strong{display:block;font-size:clamp(26px,3vw,40px);font-weight:900;color:var(--t1);letter-spacing:-.03em;line-height:1;margin-bottom:4px}
+.hstat span{font-size:12px;color:var(--t3);letter-spacing:.06em}
 
-/* ═══════ DIRECTION CARDS ═══════ */
-.dir-grid {
-  display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s2);
+/* ═══ MARQUEE ═══ */
+.marquee-wrap{
+  overflow:hidden;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);
+  background:var(--bg1);padding:14px 0;
 }
-@media(max-width:700px){ .dir-grid{ grid-template-columns:1fr } }
-.dir-card {
-  padding:var(--s5) var(--s4);
-  background:var(--surf); border:1px solid var(--bdr);
-  border-radius:var(--rL); cursor:pointer;
-  position:relative; overflow:hidden;
-  transition:border-color .25s, background .25s;
-  display:flex; flex-direction:column; gap:var(--s2);
-}
-.dir-card:hover { border-color:rgba(59,130,246,.4); background:rgba(59,130,246,.05) }
-.dir-card-top {
-  display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s2);
-}
-.dir-icon-wrap {
-  width:52px; height:52px; border-radius:12px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:26px;
-}
-.ic-blue   { background:rgba(59,130,246,.15);  border:1px solid rgba(59,130,246,.25)  }
-.ic-indigo { background:rgba(99,102,241,.15);  border:1px solid rgba(99,102,241,.25)  }
-.ic-cyan   { background:rgba(6,182,212,.15);   border:1px solid rgba(6,182,212,.25)   }
-.ic-green  { background:rgba(16,185,129,.15);  border:1px solid rgba(16,185,129,.25)  }
-.dir-badge {
-  font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--t3); padding:4px 10px; border-radius:100px;
-  background:rgba(255,255,255,.05); border:1px solid var(--bdr);
-}
-.dir-card h3 {
-  font-size:clamp(18px,2vw,22px); font-weight:700; color:var(--t1);
-  letter-spacing:-.02em; line-height:1.3;
-}
-.dir-card p {
-  font-size:15px; color:var(--t2); line-height:1.75;
-}
-.dir-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px }
-.dir-tag {
-  padding:4px 12px; border-radius:100px; font-size:12.5px;
-  background:rgba(255,255,255,.05); border:1px solid var(--bdr);
-  color:var(--t2);
-}
-.dir-link {
-  margin-top:auto; padding-top:var(--s3);
-  border-top:1px solid var(--bdr);
-  display:flex; align-items:center; justify-content:space-between;
-}
-.dir-link-inner {
-  display:flex; align-items:center; gap:8px;
-  font-size:14px; font-weight:600; color:var(--blue);
-}
-.dir-link-icon {
-  width:28px; height:28px; border-radius:50%;
-  background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.3);
-  display:flex; align-items:center; justify-content:center; font-size:13px;
-  transition:background .2s, transform .2s;
-}
-.dir-card:hover .dir-link-icon { background:rgba(59,130,246,.3); transform:scale(1.1) }
+.marquee-track{display:flex;gap:48px;width:max-content;animation:mq 26s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-item{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;color:var(--t3);white-space:nowrap;letter-spacing:.02em}
+.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);flex-shrink:0}
 
-/* ═══════ STATS ═══════ */
-.stats-band {
-  border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr);
+/* ═══ SECTION SHELL ═══ */
+.sec{padding:clamp(80px,10vw,128px) clamp(20px,5vw,80px)}
+.sec-alt{background:var(--bg1)}
+.sec-inner{max-width:1120px;margin:0 auto}
+.sec-lbl{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+.sec-lbl::before{content:'';width:18px;height:2px;background:var(--blue);border-radius:2px}
+.sec-h2{font-size:clamp(2.2rem,5vw,4rem);font-weight:900;letter-spacing:-.04em;color:var(--t1);line-height:1.05;margin-bottom:18px}
+.sec-p{font-size:clamp(16px,1.8vw,19px);color:var(--t2);max-width:540px;line-height:1.8;margin-bottom:64px}
+.sec-head{margin-bottom:64px}
+
+/* ═══ PIPELINE ═══ */
+.pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
+@media(max-width:900px){.pipeline{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.pipeline{grid-template-columns:repeat(2,1fr)}}
+.pipe-card{
+  padding:36px 22px;text-align:center;
+  background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+  transform-style:preserve-3d;
+  will-change:transform;
+  transition:border-color .3s;
+}
+.pipe-card-spotlight{
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(circle 120px at var(--mx,50%) var(--my,50%),rgba(59,130,246,.15),transparent 70%);
+  opacity:0;transition:opacity .3s;
+}
+.pipe-card:hover .pipe-card-spotlight{opacity:1}
+.pipe-card:hover{border-color:rgba(59,130,246,.35)}
+.pipe-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.pipe-card:hover::after{transform:scaleX(1)}
+.pipe-num{font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--t3);text-transform:uppercase}
+.pipe-icon{font-size:38px;line-height:1;filter:drop-shadow(0 0 12px rgba(59,130,246,.35));transition:transform .3s,filter .3s}
+.pipe-card:hover .pipe-icon{transform:scale(1.15) translateY(-3px);filter:drop-shadow(0 0 20px rgba(59,130,246,.6))}
+.pipe-name{font-size:15px;font-weight:700;color:var(--t1)}
+.pipe-desc{font-size:12.5px;color:var(--t2);line-height:1.55}
+
+/* ═══ DIR CARDS ═══ */
+.dir-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:700px){.dir-grid{grid-template-columns:1fr}}
+.dir-card{
+  padding:44px 40px;
+  background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rL);
+  cursor:pointer;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:18px;
+  transform-style:preserve-3d;will-change:transform;
+  transition:border-color .3s,box-shadow .3s;
+}
+.dir-card-spotlight{
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(circle 200px at var(--mx,50%) var(--my,50%),rgba(59,130,246,.12),transparent 65%);
+  opacity:0;transition:opacity .3s;
+}
+.dir-card:hover .dir-card-spotlight{opacity:1}
+.dir-card:hover{border-color:rgba(59,130,246,.35);box-shadow:0 20px 60px -10px rgba(0,0,0,.5)}
+
+/* animated gradient border */
+.dir-card::before{
+  content:'';position:absolute;inset:-1px;border-radius:calc(var(--rL) + 1px);
+  background:linear-gradient(var(--angle,135deg),rgba(59,130,246,.5),rgba(99,102,241,.3),rgba(6,182,212,.4),rgba(59,130,246,.5));
+  opacity:0;transition:opacity .3s;z-index:-1;
+  animation:border-rotate 4s linear infinite paused;
+}
+.dir-card:hover::before{opacity:1;animation-play-state:running}
+@keyframes border-rotate{to{--angle:495deg}}
+@property --angle{syntax:'<angle>';initial-value:135deg;inherits:false}
+
+.dir-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.dir-icon-box{
+  width:56px;height:56px;border-radius:14px;font-size:28px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+}
+.dir-card:hover .dir-icon-box{transform:scale(1.12) rotate(-5deg)}
+.ic0{background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.25)}
+.ic1{background:rgba(99,102,241,.15); border:1px solid rgba(99,102,241,.25)}
+.ic2{background:rgba(6,182,212,.15);  border:1px solid rgba(6,182,212,.25)}
+.ic3{background:rgba(16,185,129,.15); border:1px solid rgba(16,185,129,.25)}
+.dir-badge{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:4px 10px;border-radius:100px;background:rgba(255,255,255,.05);border:1px solid var(--bdr)}
+.dir-card h3{font-size:clamp(18px,2vw,23px);font-weight:800;color:var(--t1);letter-spacing:-.025em;line-height:1.25}
+.dir-card p{font-size:15px;color:var(--t2);line-height:1.78}
+.dir-tags{display:flex;flex-wrap:wrap;gap:7px}
+.dir-tag{padding:4px 12px;border-radius:100px;font-size:12.5px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);color:var(--t2)}
+.dir-footer{
+  margin-top:auto;padding-top:20px;border-top:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.dir-cta{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;color:var(--blue)}
+.dir-cta-icon{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  transition:background .25s,transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.dir-card:hover .dir-cta-icon{background:rgba(59,130,246,.3);transform:scale(1.2) rotate(10deg)}
+
+/* ═══ STATS ═══ */
+.stats{
+  border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);
   background:var(--bg1);
-  padding:clamp(var(--s5),7vw,var(--s7)) clamp(var(--s3),5vw,var(--s7));
+  padding:clamp(48px,7vw,72px) clamp(20px,5vw,80px);
 }
-.stats-grid {
-  max-width:1120px; margin:0 auto;
-  display:grid; grid-template-columns:repeat(4,1fr); gap:2px;
+.stats-grid{
+  max-width:1120px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);
 }
-@media(max-width:700px){ .stats-grid{ grid-template-columns:repeat(2,1fr) } }
-.stat-cell {
-  padding:var(--s4) var(--s5); text-align:center;
+@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.stat{
+  padding:36px 40px;text-align:center;
   border-right:1px solid var(--bdr);
+  position:relative;overflow:hidden;
 }
-.stat-cell:last-child { border-right:none }
-@media(max-width:700px){
-  .stat-cell:nth-child(2){border-right:none}
-  .stat-cell:nth-child(3){border-right:1px solid var(--bdr)}
-  .stat-cell:nth-child(even){border-right:none}
+.stat:last-child{border-right:none}
+@media(max-width:700px){.stat:nth-child(2){border-right:none}.stat:nth-child(3){border-right:1px solid var(--bdr)}}
+.stat::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle 80px at 50% 0%,rgba(59,130,246,.08),transparent);
+  opacity:0;transition:opacity .4s;
 }
-.stat-n {
-  font-size:clamp(44px,6vw,72px); font-weight:900; line-height:1;
-  letter-spacing:-.04em; color:var(--t1); margin-bottom:8px;
-}
-.stat-n span { color:var(--blue) }
-.stat-l { font-size:14px; color:var(--t3); font-weight:500 }
+.stat:hover::before{opacity:1}
+.stat-n{font-size:clamp(44px,6vw,70px);font-weight:900;line-height:1;letter-spacing:-.04em;color:var(--t1);margin-bottom:8px}
+.stat-n .accent{color:var(--blue)}
+.stat-l{font-size:14px;color:var(--t3);font-weight:500}
 
-/* ═══════ CURRICULUM ═══════ */
-.cur-tabs {
-  display:flex; gap:4px; margin-bottom:var(--s4);
-  background:rgba(255,255,255,.04); border:1px solid var(--bdr);
-  border-radius:10px; padding:4px;
-  width:fit-content; flex-wrap:wrap;
+/* ═══ CURRICULUM ═══ */
+.tabs{
+  display:flex;gap:4px;margin-bottom:28px;
+  background:rgba(255,255,255,.04);border:1px solid var(--bdr);
+  border-radius:12px;padding:5px;width:fit-content;flex-wrap:wrap;
 }
-.cur-tab {
-  padding:10px 22px; border-radius:7px; font-size:14px; font-weight:600;
-  background:transparent; color:var(--t3); cursor:pointer;
-  transition:all .2s; border:none; outline:none;
-  white-space:nowrap;
+.tab{
+  padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;
+  background:transparent;color:var(--t3);cursor:pointer;border:none;transition:all .25s;white-space:nowrap;
 }
-.cur-tab:hover { color:var(--t1) }
-.cur-tab.on {
-  background:var(--bg2); color:var(--t1);
-  box-shadow:0 1px 3px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08);
+.tab:hover{color:var(--t1)}
+.tab.on{background:var(--bg2);color:var(--t1);box-shadow:0 2px 8px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.07)}
+.tab-panel{display:none}
+.tab-panel.on{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;animation:panelin .3s ease}
+@keyframes panelin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.cur-card{
+  padding:20px 22px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);
+  transition:border-color .2s,background .2s,transform .25s;
+  cursor:default;
 }
-.cur-panel { display:none }
-.cur-panel.on {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:var(--s1); animation:panelin .25s ease;
-}
-@keyframes panelin { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.cur-item {
-  padding:var(--s3) var(--s3);
-  background:var(--surf); border:1px solid var(--bdr); border-radius:var(--r);
-  transition:border-color .2s, background .2s;
-}
-.cur-item:hover { border-color:rgba(59,130,246,.3); background:rgba(59,130,246,.05) }
-.cur-item-tag {
-  font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--blue); margin-bottom:6px;
-}
-.cur-item-name { font-size:15px; font-weight:600; color:var(--t1) }
+.cur-card:hover{border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.05);transform:translateY(-2px)}
+.cur-tag{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.cur-name{font-size:15px;font-weight:700;color:var(--t1)}
 
-/* ═══════ TIMELINE ═══════ */
-.tl { display:flex; flex-direction:column; gap:0; max-width:800px }
-.tl-step {
-  display:flex; gap:var(--s4); position:relative;
-  opacity:0; transform:translateY(24px);
-  transition:opacity .6s ease, transform .6s ease;
+/* ═══ TIMELINE ═══ */
+.tl{max-width:820px}
+.tl-item{
+  display:flex;gap:36px;position:relative;
+  padding-bottom:60px;
 }
-.tl-step.vis { opacity:1; transform:translateY(0) }
-.tl-left {
-  display:flex; flex-direction:column; align-items:center;
-  flex-shrink:0; width:48px;
+.tl-item:last-child{padding-bottom:0}
+.tl-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:52px}
+.tl-num-circle{
+  width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;
+  color:#fff;position:relative;z-index:1;
+  box-shadow:0 0 0 4px rgba(59,130,246,.12),0 8px 24px rgba(0,0,0,.3);
 }
-.tl-circle {
-  width:48px; height:48px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px; font-weight:800; color:#fff;
-  border:2px solid rgba(255,255,255,.1);
-  box-shadow:0 0 0 4px rgba(59,130,246,.15);
-  position:relative; z-index:1;
+.tl-connector{
+  flex:1;width:2px;margin:6px 0;
+  background:linear-gradient(to bottom,var(--bdr2),transparent);
+  min-height:48px;
 }
-.tl-line {
-  flex:1; width:2px; background:var(--bdr); margin:4px 0;
-  min-height:var(--s6);
-}
-.tl-right { padding-bottom:var(--s6); flex:1 }
-.tl-step:last-child .tl-line { display:none }
-.tl-step:last-child .tl-right { padding-bottom:0 }
-.tl-num {
-  font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--blue); margin-bottom:6px; margin-top:12px;
-}
-.tl-title {
-  font-size:clamp(18px,2.5vw,24px); font-weight:700; color:var(--t1);
-  margin-bottom:10px; letter-spacing:-.01em;
-}
-.tl-body { font-size:16px; color:var(--t2); line-height:1.75; margin-bottom:var(--s2) }
-.tl-chips { display:flex; flex-wrap:wrap; gap:6px }
-.tl-chip {
-  padding:5px 14px; border-radius:100px; font-size:13px; font-weight:500;
-  background:rgba(255,255,255,.05); border:1px solid var(--bdr); color:var(--t2);
-}
+.tl-item:last-child .tl-connector{display:none}
+.tl-right{padding-top:10px}
+.tl-phase{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.tl-title{font-size:clamp(18px,2.5vw,26px);font-weight:800;color:var(--t1);letter-spacing:-.025em;margin-bottom:10px;line-height:1.2}
+.tl-body{font-size:16px;color:var(--t2);line-height:1.8;margin-bottom:16px;max-width:580px}
+.tl-chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:5px 14px;border-radius:100px;font-size:13px;font-weight:500;background:rgba(255,255,255,.05);border:1px solid var(--bdr);color:var(--t2)}
 
-/* ═══════ CAREER ═══════ */
-.career-grid {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s2);
+/* ═══ CAREER ═══ */
+.career-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.career-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.career-grid{grid-template-columns:1fr}}
+.career-card{
+  padding:36px;border-radius:var(--rL);
+  background:var(--surf);border:1px solid var(--bdr);
+  display:flex;flex-direction:column;gap:16px;
+  position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s;
+  will-change:transform;
 }
-@media(max-width:900px){ .career-grid{grid-template-columns:repeat(2,1fr)} }
-@media(max-width:560px){ .career-grid{grid-template-columns:1fr} }
-.career-card {
-  padding:var(--s4); border-radius:var(--rL);
-  background:var(--surf); border:1px solid var(--bdr);
-  display:flex; flex-direction:column; gap:var(--s2);
-  transition:border-color .25s, background .25s;
-}
-.career-card:hover { border-color:rgba(59,130,246,.3); background:rgba(59,130,246,.05) }
-.career-icon {
-  width:48px; height:48px; border-radius:10px;
-  background:rgba(255,255,255,.05); border:1px solid var(--bdr);
-  display:flex; align-items:center; justify-content:center; font-size:22px;
-}
-.career-card h3 { font-size:17px; font-weight:700; color:var(--t1); letter-spacing:-.01em }
-.career-card p  { font-size:14.5px; color:var(--t2); line-height:1.7; flex:1 }
-.career-items { display:flex; flex-direction:column; gap:4px; padding-top:var(--s2); border-top:1px solid var(--bdr) }
-.career-item { font-size:13.5px; color:var(--t3); display:flex; align-items:center; gap:7px }
-.career-item::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--blue); flex-shrink:0 }
+.career-card:hover{border-color:rgba(59,130,246,.3);transform:translateY(-6px);box-shadow:0 24px 60px -8px rgba(0,0,0,.5)}
+.career-icon{width:50px;height:50px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.career-card:hover .career-icon{transform:scale(1.15) rotate(-8deg)}
+.career-card h3{font-size:17px;font-weight:800;color:var(--t1);letter-spacing:-.015em}
+.career-card p{font-size:14.5px;color:var(--t2);line-height:1.72;flex:1}
+.career-list{display:flex;flex-direction:column;gap:5px;padding-top:16px;border-top:1px solid var(--bdr)}
+.career-list li{font-size:13.5px;color:var(--t3);display:flex;align-items:center;gap:8px;list-style:none}
+.career-list li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--blue);flex-shrink:0}
 
-/* ═══════ CTA ═══════ */
-.cta {
-  padding:clamp(var(--s7),12vw,180px) clamp(var(--s3),5vw,var(--s7));
-  text-align:center; position:relative; overflow:hidden;
+/* ═══ CTA ═══ */
+.cta{
+  padding:clamp(96px,12vw,180px) clamp(20px,5vw,80px);
+  text-align:center;position:relative;overflow:hidden;
 }
-.cta::before {
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(ellipse 70% 70% at 50% 50%, rgba(59,130,246,.1), transparent 70%);
-}
-.cta h2 {
-  font-size:clamp(2.5rem,6vw,5rem); font-weight:900;
-  color:var(--t1); letter-spacing:-.04em; line-height:1.05;
-  margin-bottom:var(--s3); position:relative;
-}
-.cta p {
-  font-size:clamp(16px,2vw,20px); color:var(--t2); max-width:520px;
-  margin:0 auto var(--s5); line-height:1.8; position:relative;
-}
-.cta-actions { display:flex; gap:var(--s2); justify-content:center; flex-wrap:wrap; position:relative }
+.cta::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(59,130,246,.1),transparent 70%)}
+.cta h2{font-size:clamp(2.5rem,7vw,6rem);font-weight:900;color:var(--t1);letter-spacing:-.05em;line-height:1;margin-bottom:24px;position:relative}
+.cta p{font-size:clamp(16px,2vw,20px);color:var(--t2);max-width:520px;margin:0 auto 52px;line-height:1.82;position:relative}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative}
 
-/* ═══════ FOOTER ═══════ */
-footer {
-  border-top:1px solid var(--bdr); background:var(--bg);
-  padding:var(--s4) clamp(var(--s3),5vw,var(--s7));
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--s2);
-  font-size:14px; color:var(--t3);
+/* ═══ FOOTER ═══ */
+footer{
+  border-top:1px solid var(--bdr);background:var(--bg);
+  padding:28px clamp(20px,5vw,80px);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+  font-size:14px;color:var(--t3);
 }
-footer a { color:var(--t3); transition:color .2s }
-footer a:hover { color:var(--t1) }
+footer a{color:var(--t3);transition:color .2s}
+footer a:hover{color:var(--t1)}
 
-/* ═══════ MODAL ═══════ */
-.overlay {
-  position:fixed; inset:0; z-index:900;
-  background:rgba(5,10,18,.88); backdrop-filter:blur(16px);
-  display:flex; align-items:center; justify-content:center;
-  padding:var(--s3); opacity:0; pointer-events:none; transition:opacity .25s;
+/* ═══ MODAL ═══ */
+.overlay{
+  position:fixed;inset:0;z-index:900;
+  background:rgba(4,10,22,.90);backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  opacity:0;pointer-events:none;transition:opacity .3s;
 }
-.overlay.on { opacity:1; pointer-events:all }
-.modal {
-  width:min(92vw,680px); background:var(--bg2);
-  border:1px solid var(--bdr2); border-radius:var(--rL);
-  box-shadow:0 40px 120px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
-  overflow:hidden;
-  transform:scale(.96) translateY(12px);
-  transition:transform .3s cubic-bezier(.22,1,.36,1);
+.overlay.on{opacity:1;pointer-events:all}
+.modal{
+  width:min(94vw,700px);background:var(--bg2);
+  border:1px solid var(--bdr2);border-radius:var(--rL);
+  box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);
+  overflow:hidden;transform:scale(.94) translateY(16px);
+  transition:transform .4s cubic-bezier(.22,1,.36,1);
 }
-.overlay.on .modal { transform:scale(1) translateY(0) }
-.modal-hdr {
-  padding:var(--s4) var(--s4) var(--s3);
-  border-bottom:1px solid var(--bdr);
-  display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s3);
+.overlay.on .modal{transform:scale(1) translateY(0)}
+.modal-hdr{
+  padding:28px 32px 22px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
 }
-.modal-hdr-left { display:flex; align-items:flex-start; gap:var(--s3) }
-.modal-hdr-icon {
-  width:44px; height:44px; border-radius:10px; font-size:22px;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.25);
+.modal-hdr-l{display:flex;align-items:flex-start;gap:18px}
+.modal-icon{width:48px;height:48px;border-radius:12px;font-size:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25)}
+.modal-sub{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.modal-hdr h3{font-size:20px;font-weight:800;color:var(--t1);letter-spacing:-.02em}
+.modal-close{width:34px;height:34px;border-radius:8px;flex-shrink:0;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid var(--bdr);color:var(--t2);font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.modal-close:hover{background:rgba(255,255,255,.12);color:var(--t1)}
+.modal-body{padding:24px 32px 32px}
+.modal-desc{font-size:15px;color:var(--t2);line-height:1.78;margin-bottom:20px}
+.modal-links{display:flex;flex-direction:column;gap:8px}
+.mlink{
+  display:flex;align-items:center;gap:16px;padding:16px 18px;
+  border-radius:10px;border:1px solid var(--bdr);background:rgba(255,255,255,.02);
+  transition:border-color .2s,background .2s;cursor:pointer;
 }
-.modal-subtitle { font-size:12px; color:var(--blue); font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin-bottom:4px }
-.modal-hdr h3 { font-size:20px; font-weight:700; color:var(--t1); letter-spacing:-.01em }
-.modal-x {
-  width:32px; height:32px; border-radius:8px; flex-shrink:0; cursor:pointer;
-  background:rgba(255,255,255,.06); border:1px solid var(--bdr);
-  color:var(--t2); font-size:16px;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .2s, color .2s;
-}
-.modal-x:hover { background:rgba(255,255,255,.1); color:var(--t1) }
-.modal-body { padding:var(--s3) var(--s4) var(--s4) }
-.modal-desc { font-size:15px; color:var(--t2); line-height:1.75; margin-bottom:var(--s3) }
-.modal-links { display:flex; flex-direction:column; gap:var(--s1) }
-.modal-link {
-  display:flex; align-items:center; gap:var(--s3);
-  padding:var(--s3) var(--s3); border-radius:10px;
-  border:1px solid var(--bdr); background:rgba(255,255,255,.02);
-  transition:border-color .2s, background .2s;
-  cursor:pointer;
-}
-.modal-link:hover { border-color:rgba(59,130,246,.4); background:rgba(59,130,246,.07) }
-.modal-link-icon {
-  width:40px; height:40px; border-radius:8px; font-size:20px; flex-shrink:0;
-  background:rgba(255,255,255,.06); border:1px solid var(--bdr);
-  display:flex; align-items:center; justify-content:center;
-}
-.modal-link-text strong { display:block; font-size:15px; font-weight:600; color:var(--t1); margin-bottom:2px }
-.modal-link-text span  { font-size:13px; color:var(--t3) }
-.modal-link-arr { margin-left:auto; color:var(--t3); font-size:18px; flex-shrink:0; transition:color .2s, transform .2s }
-.modal-link:hover .modal-link-arr { color:var(--blue); transform:translateX(3px) }
+.mlink:hover{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.07)}
+.mlink-icon{width:42px;height:42px;border-radius:9px;font-size:22px;flex-shrink:0;background:rgba(255,255,255,.06);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center}
+.mlink-text strong{display:block;font-size:15px;font-weight:700;color:var(--t1);margin-bottom:2px}
+.mlink-text span{font-size:13px;color:var(--t3)}
+.mlink-arr{margin-left:auto;color:var(--t3);font-size:18px;flex-shrink:0;transition:color .2s,transform .25s cubic-bezier(.34,1.56,.64,1)}
+.mlink:hover .mlink-arr{color:var(--blue);transform:translateX(5px)}
 
-/* ═══════ REVEAL ANIMATION ═══════ */
-.rv { opacity:0; transform:translateY(28px); transition:opacity .65s ease, transform .65s ease }
-.rv.vis { opacity:1; transform:translateY(0) }
-.rv2 { transition-delay:.1s } .rv3 { transition-delay:.18s } .rv4 { transition-delay:.26s }
+/* ═══ GSAP HIDDEN ═══ */
+.gsap-hidden{opacity:0;transform:translateY(32px)}
+.gsap-hidden-l{opacity:0;transform:translateX(-32px)}
+.gsap-hidden-r{opacity:0;transform:translateX(32px)}
 </style>
 </head>
 <body>
 
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo" id="loaderLogo">交通信息工程及控制</div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+</div>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
 <!-- NAV -->
 <nav id="nav">
   <div class="nav-logo">
-    <div class="nav-logo-mark">🚦</div>
+    <div class="nav-mark">🚦</div>
     <span>交通信息工程及控制</span>
   </div>
   <ul class="nav-links">
@@ -582,7 +518,7 @@ footer a:hover { color:var(--t1) }
     <li><a href="#training">培养</a></li>
     <li><a href="#career">就业</a></li>
   </ul>
-  <a class="nav-cta" href="#directions">研究方向 →</a>
+  <a class="nav-cta magnetic" href="#directions">研究方向 →</a>
 </nav>
 
 <!-- HERO -->
@@ -591,434 +527,250 @@ footer a:hover { color:var(--t1) }
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="hero-grid" aria-hidden="true"></div>
 
-  <div class="hero-eyebrow">交通运输工程 · 二级学科</div>
-
-  <h1 class="hero-title">
-    交通信息工程<br>
-    <span class="accent">及控制</span>
-    <span class="hero-en">Traffic Information Engineering &amp; Control</span>
-  </h1>
-
-  <p class="hero-body">
-    融合交通工程、信息科学与自动控制，聚焦交通系统的感知、传输、
-    分析与控制全链路，培养引领智慧交通时代的复合型工程科研人才。
-  </p>
-
-  <div class="hero-actions">
-    <a class="btn-lg btn-primary" href="#pipeline">深入了解</a>
-    <a class="btn-lg btn-secondary" href="#directions">查看研究方向</a>
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="badge-dot"></span>交通运输工程 · 二级学科 · 智慧交通前沿</div>
+    <h1 class="hero-title" id="heroTitle">
+      <span class="word">交通<span class="word">信息</span></span><br>
+      <span class="word"><span class="accent">工程及</span></span><span class="word"><span class="accent">控制</span></span>
+      <span class="hero-sub-title" id="heroEn">Traffic Information Engineering &amp; Control</span>
+    </h1>
+    <p class="hero-body" id="heroBody">融合交通工程、信息科学与自动控制三大领域，聚焦交通系统感知·传输·分析·控制的全链路技术体系，培养引领智慧交通时代的复合型工程科研人才。</p>
+    <div class="hero-actions" id="heroActions">
+      <a class="btn-hero btn-p magnetic" href="#pipeline">深入了解</a>
+      <a class="btn-hero btn-s magnetic" href="#directions">查看研究方向</a>
+    </div>
   </div>
 
-  <div class="hero-scroll" aria-hidden="true">
-    <span>向下滚动</span>
-    <div class="scroll-line"></div>
+  <div class="hero-stats" id="heroStats">
+    <div class="hstat"><strong><span class="cnt" data-t="4">0</span>+</strong><span>核心研究方向</span></div>
+    <div class="hstat"><strong><span class="cnt" data-t="20">0</span>+</strong><span>专业核心课程</span></div>
+    <div class="hstat"><strong><span class="cnt" data-t="95">0</span>%</strong><span>就业深造率</span></div>
+  </div>
+
+  <div class="hero-scroll" id="heroScroll">
+    <div class="scroll-bar"><div class="scroll-bar-inner"></div></div>
+    <span>Scroll</span>
   </div>
 </section>
 
 <!-- MARQUEE -->
 <div class="marquee-wrap" aria-hidden="true">
-  <div class="marquee-track">
-    <!-- first copy -->
-    <span class="marquee-item"><span class="marquee-dot"></span>计算机视觉</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>交通流预测</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>信号控制优化</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>车路协同 V2X</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>毫米波雷达</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>图神经网络</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>数字孪生</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>强化学习控制</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>自动驾驶测试</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>交通大数据</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>5G 通信</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>MaaS 出行服务</span>
-    <!-- second copy for seamless loop -->
-    <span class="marquee-item"><span class="marquee-dot"></span>计算机视觉</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>交通流预测</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>信号控制优化</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>车路协同 V2X</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>毫米波雷达</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>图神经网络</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>数字孪生</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>强化学习控制</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>自动驾驶测试</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>交通大数据</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>5G 通信</span>
-    <span class="marquee-item"><span class="marquee-dot"></span>MaaS 出行服务</span>
+  <div class="marquee-track" id="mq">
+    <span class="mq-item"><span class="mq-dot"></span>计算机视觉</span>
+    <span class="mq-item"><span class="mq-dot"></span>交通流预测</span>
+    <span class="mq-item"><span class="mq-dot"></span>信号控制优化</span>
+    <span class="mq-item"><span class="mq-dot"></span>车路协同 V2X</span>
+    <span class="mq-item"><span class="mq-dot"></span>毫米波雷达</span>
+    <span class="mq-item"><span class="mq-dot"></span>图神经网络</span>
+    <span class="mq-item"><span class="mq-dot"></span>数字孪生</span>
+    <span class="mq-item"><span class="mq-dot"></span>强化学习控制</span>
+    <span class="mq-item"><span class="mq-dot"></span>自动驾驶测试</span>
+    <span class="mq-item"><span class="mq-dot"></span>交通大数据</span>
+    <span class="mq-item"><span class="mq-dot"></span>5G 通信</span>
+    <span class="mq-item"><span class="mq-dot"></span>MaaS 出行服务</span>
+    <span class="mq-item"><span class="mq-dot"></span>计算机视觉</span>
+    <span class="mq-item"><span class="mq-dot"></span>交通流预测</span>
+    <span class="mq-item"><span class="mq-dot"></span>信号控制优化</span>
+    <span class="mq-item"><span class="mq-dot"></span>车路协同 V2X</span>
+    <span class="mq-item"><span class="mq-dot"></span>毫米波雷达</span>
+    <span class="mq-item"><span class="mq-dot"></span>图神经网络</span>
+    <span class="mq-item"><span class="mq-dot"></span>数字孪生</span>
+    <span class="mq-item"><span class="mq-dot"></span>强化学习控制</span>
+    <span class="mq-item"><span class="mq-dot"></span>自动驾驶测试</span>
+    <span class="mq-item"><span class="mq-dot"></span>交通大数据</span>
+    <span class="mq-item"><span class="mq-dot"></span>5G 通信</span>
+    <span class="mq-item"><span class="mq-dot"></span>MaaS 出行服务</span>
   </div>
 </div>
 
 <!-- PIPELINE -->
-<section class="section section-alt" id="pipeline">
-  <div class="section-inner">
-    <div class="section-head rv">
-      <div class="section-label">System Overview</div>
-      <h2 class="section-title">从道路感知<br>到城市大脑</h2>
-      <p class="section-body">六层技术链路，完整覆盖交通信息工程的数据采集、传输、智能分析与优化控制全流程。</p>
+<section class="sec sec-alt" id="pipeline">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="sec-lbl gsap-hidden">System Overview</div>
+      <h2 class="sec-h2 gsap-hidden">从道路感知到城市大脑</h2>
+      <p class="sec-p gsap-hidden">六层技术链路，完整覆盖交通信息工程数据采集、传输、智能分析与优化控制全流程。</p>
     </div>
-    <div class="pipeline rv rv2">
-      <div class="pipe-card">
-        <span class="pipe-num">01</span>
-        <span class="pipe-icon">📡</span>
-        <span class="pipe-name">数据感知</span>
-        <span class="pipe-desc">摄像机·雷达·地磁·GPS·手机信令</span>
-      </div>
-      <div class="pipe-card">
-        <span class="pipe-num">02</span>
-        <span class="pipe-icon">🌐</span>
-        <span class="pipe-name">通信传输</span>
-        <span class="pipe-desc">5G · C-V2X · 光纤 · 边缘节点</span>
-      </div>
-      <div class="pipe-card">
-        <span class="pipe-num">03</span>
-        <span class="pipe-icon">🧮</span>
-        <span class="pipe-name">数据处理</span>
-        <span class="pipe-desc">清洗融合 · 时空分析 · 深度学习</span>
-      </div>
-      <div class="pipe-card">
-        <span class="pipe-num">04</span>
-        <span class="pipe-icon">🧠</span>
-        <span class="pipe-name">决策建模</span>
-        <span class="pipe-desc">流量预测 · 事件识别 · 需求估计</span>
-      </div>
-      <div class="pipe-card">
-        <span class="pipe-num">05</span>
-        <span class="pipe-icon">🚦</span>
-        <span class="pipe-name">控制优化</span>
-        <span class="pipe-desc">信号配时 · 路径诱导 · 应急调度</span>
-      </div>
-      <div class="pipe-card">
-        <span class="pipe-num">06</span>
-        <span class="pipe-icon">🏙️</span>
-        <span class="pipe-name">智慧城市</span>
-        <span class="pipe-desc">城市大脑 · MaaS · 车路云一体</span>
-      </div>
+    <div class="pipeline">
+      <div class="pipe-card gsap-hidden"><div class="pipe-card-spotlight"></div><span class="pipe-num">01</span><span class="pipe-icon">📡</span><span class="pipe-name">数据感知</span><span class="pipe-desc">摄像机·雷达·地磁<br>GPS·手机信令</span></div>
+      <div class="pipe-card gsap-hidden"><div class="pipe-card-spotlight"></div><span class="pipe-num">02</span><span class="pipe-icon">🌐</span><span class="pipe-name">通信传输</span><span class="pipe-desc">5G·C-V2X<br>光纤·边缘节点</span></div>
+      <div class="pipe-card gsap-hidden"><div class="pipe-card-spotlight"></div><span class="pipe-num">03</span><span class="pipe-icon">🧮</span><span class="pipe-name">数据处理</span><span class="pipe-desc">清洗融合<br>时空分析·深度学习</span></div>
+      <div class="pipe-card gsap-hidden"><div class="pipe-card-spotlight"></div><span class="pipe-num">04</span><span class="pipe-icon">🧠</span><span class="pipe-name">决策建模</span><span class="pipe-desc">流量预测<br>事件识别·需求估计</span></div>
+      <div class="pipe-card gsap-hidden"><div class="pipe-card-spotlight"></div><span class="pipe-num">05</span><span class="pipe-icon">🚦</span><span class="pipe-name">控制优化</span><span class="pipe-desc">信号配时<br>路径诱导·应急调度</span></div>
+      <div class="pipe-card gsap-hidden"><div class="pipe-card-spotlight"></div><span class="pipe-num">06</span><span class="pipe-icon">🏙️</span><span class="pipe-name">智慧城市</span><span class="pipe-desc">城市大脑<br>MaaS·车路云一体</span></div>
     </div>
   </div>
 </section>
 
 <!-- STATS -->
-<div class="stats-band">
+<div class="stats">
   <div class="stats-grid">
-    <div class="stat-cell rv">
-      <div class="stat-n"><span class="cnt" data-t="60">0</span><span>+</span> 年</div>
-      <div class="stat-l">学科发展历史</div>
-    </div>
-    <div class="stat-cell rv rv2">
-      <div class="stat-n"><span class="cnt" data-t="100">0</span><span>+</span></div>
-      <div class="stat-l">国内开设高校</div>
-    </div>
-    <div class="stat-cell rv rv3">
-      <div class="stat-n"><span class="cnt" data-t="4">0</span></div>
-      <div class="stat-l">核心研究方向</div>
-    </div>
-    <div class="stat-cell rv rv4">
-      <div class="stat-n"><span class="cnt" data-t="95">0</span><span>%</span></div>
-      <div class="stat-l">就业 / 深造率</div>
-    </div>
+    <div class="stat gsap-hidden"><div class="stat-n"><span class="cnt" data-t="60">0</span><span class="accent">+</span> 年</div><div class="stat-l">学科发展历史</div></div>
+    <div class="stat gsap-hidden"><div class="stat-n"><span class="cnt" data-t="100">0</span><span class="accent">+</span></div><div class="stat-l">国内开设高校</div></div>
+    <div class="stat gsap-hidden"><div class="stat-n"><span class="cnt" data-t="4">0</span></div><div class="stat-l">核心研究方向</div></div>
+    <div class="stat gsap-hidden"><div class="stat-n"><span class="cnt" data-t="95">0</span><span class="accent">%</span></div><div class="stat-l">就业 / 深造率</div></div>
   </div>
 </div>
 
 <!-- DIRECTIONS -->
-<section class="section" id="directions">
-  <div class="section-inner">
-    <div class="section-head rv">
-      <div class="section-label">Research Directions</div>
-      <h2 class="section-title">四大核心研究方向</h2>
-      <p class="section-body">点击任意方向卡片，查看 B 站精选学习资源，覆盖从入门到前沿的完整学习路径。</p>
+<section class="sec" id="directions">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="sec-lbl gsap-hidden">Research Directions</div>
+      <h2 class="sec-h2 gsap-hidden">四大核心研究方向</h2>
+      <p class="sec-p gsap-hidden">点击任意方向卡片，查看 B 站精选学习资源，覆盖从入门到前沿的完整学习路径。</p>
     </div>
     <div class="dir-grid">
-
-      <div class="dir-card rv" data-m="m1">
-        <div class="dir-card-top">
-          <div class="dir-icon-wrap ic-blue">📡</div>
-          <span class="dir-badge">Direction 01</span>
-        </div>
+      <div class="dir-card gsap-hidden" data-m="m1">
+        <div class="dir-card-spotlight"></div>
+        <div class="dir-top"><div class="dir-icon-box ic0">📡</div><span class="dir-badge">Direction 01</span></div>
         <h3>交通信息感知与采集</h3>
-        <p>研究视频检测、毫米波雷达、地磁感应与物联网终端等多源异构感知技术，构建高精度、低延时的交通感知网络基础设施。</p>
-        <div class="dir-tags">
-          <span class="dir-tag">计算机视觉</span>
-          <span class="dir-tag">毫米波雷达</span>
-          <span class="dir-tag">多源融合</span>
-          <span class="dir-tag">C-V2X</span>
-        </div>
-        <div class="dir-link">
-          <div class="dir-link-inner">
-            <div class="dir-link-icon">▶</div>
-            查看 B 站推荐视频
-          </div>
-          <span style="font-size:13px;color:var(--t3)">4 个精选链接 →</span>
-        </div>
+        <p>研究视频检测、毫米波雷达、地磁感应与物联网终端等多源异构感知技术，构建高精度低延时的交通感知网络基础设施。</p>
+        <div class="dir-tags"><span class="dir-tag">计算机视觉</span><span class="dir-tag">毫米波雷达</span><span class="dir-tag">多源融合</span><span class="dir-tag">C-V2X</span></div>
+        <div class="dir-footer"><div class="dir-cta"><div class="dir-cta-icon">▶</div>查看 B 站推荐视频</div><span style="font-size:13px;color:var(--t3)">4 个精选 →</span></div>
       </div>
-
-      <div class="dir-card rv rv2" data-m="m2">
-        <div class="dir-card-top">
-          <div class="dir-icon-wrap ic-indigo">🧠</div>
-          <span class="dir-badge">Direction 02</span>
-        </div>
+      <div class="dir-card gsap-hidden" data-m="m2">
+        <div class="dir-card-spotlight"></div>
+        <div class="dir-top"><div class="dir-icon-box ic1">🧠</div><span class="dir-badge">Direction 02</span></div>
         <h3>交通数据智能分析</h3>
         <p>综合运用统计建模、机器学习与时空图神经网络，实现交通流预测、拥堵溯源、事件检测与出行需求估计，支撑城市大脑决策。</p>
-        <div class="dir-tags">
-          <span class="dir-tag">时空预测</span>
-          <span class="dir-tag">图神经网络</span>
-          <span class="dir-tag">大数据平台</span>
-          <span class="dir-tag">强化学习</span>
-        </div>
-        <div class="dir-link">
-          <div class="dir-link-inner">
-            <div class="dir-link-icon">▶</div>
-            查看 B 站推荐视频
-          </div>
-          <span style="font-size:13px;color:var(--t3)">4 个精选链接 →</span>
-        </div>
+        <div class="dir-tags"><span class="dir-tag">时空预测</span><span class="dir-tag">图神经网络</span><span class="dir-tag">大数据平台</span><span class="dir-tag">强化学习</span></div>
+        <div class="dir-footer"><div class="dir-cta"><div class="dir-cta-icon">▶</div>查看 B 站推荐视频</div><span style="font-size:13px;color:var(--t3)">4 个精选 →</span></div>
       </div>
-
-      <div class="dir-card rv rv3" data-m="m3">
-        <div class="dir-card-top">
-          <div class="dir-icon-wrap ic-cyan">⚙️</div>
-          <span class="dir-badge">Direction 03</span>
-        </div>
+      <div class="dir-card gsap-hidden" data-m="m3">
+        <div class="dir-card-spotlight"></div>
+        <div class="dir-top"><div class="dir-icon-box ic2">⚙️</div><span class="dir-badge">Direction 03</span></div>
         <h3>交通控制理论与应用</h3>
-        <p>以自动控制、运筹优化与强化学习为核心方法，研究信号配时、区域协调控制、公交优先与高速匝道控制等多场景优化策略。</p>
-        <div class="dir-tags">
-          <span class="dir-tag">信号控制</span>
-          <span class="dir-tag">MPC 控制</span>
-          <span class="dir-tag">绿波协调</span>
-          <span class="dir-tag">仿真优化</span>
-        </div>
-        <div class="dir-link">
-          <div class="dir-link-inner">
-            <div class="dir-link-icon">▶</div>
-            查看 B 站推荐视频
-          </div>
-          <span style="font-size:13px;color:var(--t3)">4 个精选链接 →</span>
-        </div>
+        <p>以自动控制、运筹优化与强化学习为核心方法，研究信号配时、区域协调控制、公交优先与高速匝道控制等多场景最优化策略。</p>
+        <div class="dir-tags"><span class="dir-tag">信号控制</span><span class="dir-tag">MPC 控制</span><span class="dir-tag">绿波协调</span><span class="dir-tag">仿真优化</span></div>
+        <div class="dir-footer"><div class="dir-cta"><div class="dir-cta-icon">▶</div>查看 B 站推荐视频</div><span style="font-size:13px;color:var(--t3)">4 个精选 →</span></div>
       </div>
-
-      <div class="dir-card rv rv4" data-m="m4">
-        <div class="dir-card-top">
-          <div class="dir-icon-wrap ic-green">🚗</div>
-          <span class="dir-badge">Direction 04</span>
-        </div>
+      <div class="dir-card gsap-hidden" data-m="m4">
+        <div class="dir-card-spotlight"></div>
+        <div class="dir-top"><div class="dir-icon-box ic3">🚗</div><span class="dir-badge">Direction 04</span></div>
         <h3>车路协同与智能交通系统</h3>
         <p>面向自动驾驶与智能网联汽车，研究 V2X 通信协议、路侧边缘计算、协同感知决策、数字孪生仿真验证及 MaaS 出行服务体系。</p>
-        <div class="dir-tags">
-          <span class="dir-tag">V2X 通信</span>
-          <span class="dir-tag">数字孪生</span>
-          <span class="dir-tag">自动驾驶</span>
-          <span class="dir-tag">MaaS</span>
-        </div>
-        <div class="dir-link">
-          <div class="dir-link-inner">
-            <div class="dir-link-icon">▶</div>
-            查看 B 站推荐视频
-          </div>
-          <span style="font-size:13px;color:var(--t3)">4 个精选链接 →</span>
-        </div>
+        <div class="dir-tags"><span class="dir-tag">V2X 通信</span><span class="dir-tag">数字孪生</span><span class="dir-tag">自动驾驶</span><span class="dir-tag">MaaS</span></div>
+        <div class="dir-footer"><div class="dir-cta"><div class="dir-cta-icon">▶</div>查看 B 站推荐视频</div><span style="font-size:13px;color:var(--t3)">4 个精选 →</span></div>
       </div>
-
     </div>
   </div>
 </section>
 
 <!-- CURRICULUM -->
-<section class="section section-alt" id="curriculum">
-  <div class="section-inner">
-    <div class="section-head rv">
-      <div class="section-label">Curriculum</div>
-      <h2 class="section-title">课程体系</h2>
-      <p class="section-body">四大模块系统构建跨学科知识能力框架，覆盖交通基础、信息技术、控制智能与综合应用。</p>
+<section class="sec sec-alt" id="curriculum">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="sec-lbl gsap-hidden">Curriculum</div>
+      <h2 class="sec-h2 gsap-hidden">课程体系</h2>
+      <p class="sec-p gsap-hidden">四大模块系统构建跨学科知识能力框架，覆盖交通基础、信息技术、控制智能与综合应用。</p>
     </div>
-    <div class="cur-tabs rv rv2" role="tablist">
-      <button class="cur-tab on" data-p="p1" role="tab">交通基础</button>
-      <button class="cur-tab"    data-p="p2" role="tab">信息技术</button>
-      <button class="cur-tab"    data-p="p3" role="tab">控制与智能</button>
-      <button class="cur-tab"    data-p="p4" role="tab">综合应用</button>
+    <div class="tabs gsap-hidden" role="tablist">
+      <button class="tab on" data-p="p1">交通基础</button>
+      <button class="tab" data-p="p2">信息技术</button>
+      <button class="tab" data-p="p3">控制与智能</button>
+      <button class="tab" data-p="p4">综合应用</button>
     </div>
-    <div id="p1" class="cur-panel on">
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">交通工程学</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">交通流理论</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">交通规划与管理</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">道路交通安全</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">运输组织学</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">城市公共交通</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">交通系统仿真</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">综合运输体系</div></div>
+    <div id="p1" class="tab-panel on">
+      <div class="cur-card gsap-hidden"><div class="cur-tag">必修</div><div class="cur-name">交通工程学</div></div>
+      <div class="cur-card gsap-hidden"><div class="cur-tag">必修</div><div class="cur-name">交通流理论</div></div>
+      <div class="cur-card gsap-hidden"><div class="cur-tag">必修</div><div class="cur-name">交通规划与管理</div></div>
+      <div class="cur-card gsap-hidden"><div class="cur-tag">必修</div><div class="cur-name">道路交通安全</div></div>
+      <div class="cur-card gsap-hidden"><div class="cur-tag">选修</div><div class="cur-name">运输组织学</div></div>
+      <div class="cur-card gsap-hidden"><div class="cur-tag">选修</div><div class="cur-name">城市公共交通</div></div>
+      <div class="cur-card gsap-hidden"><div class="cur-tag">选修</div><div class="cur-name">交通系统仿真</div></div>
+      <div class="cur-card gsap-hidden"><div class="cur-tag">选修</div><div class="cur-name">综合运输体系</div></div>
     </div>
-    <div id="p2" class="cur-panel">
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">程序设计基础</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">数据结构与算法</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">数据库系统</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">计算机网络</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">交通大数据分析</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">GIS 与时空分析</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">嵌入式系统开发</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">通信原理</div></div>
+    <div id="p2" class="tab-panel">
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">程序设计基础</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">数据结构与算法</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">数据库系统</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">计算机网络</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">交通大数据分析</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">GIS 与时空分析</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">嵌入式系统开发</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">通信原理</div></div>
     </div>
-    <div id="p3" class="cur-panel">
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">自动控制原理</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">交通信号控制</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">机器学习基础</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">深度学习与应用</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">强化学习控制</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">智能优化算法</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">数字信号处理</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">系统辨识与估计</div></div>
+    <div id="p3" class="tab-panel">
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">自动控制原理</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">交通信号控制</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">机器学习基础</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">深度学习与应用</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">强化学习控制</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">智能优化算法</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">数字信号处理</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">系统辨识与估计</div></div>
     </div>
-    <div id="p4" class="cur-panel">
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">智能交通系统</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">车路协同技术</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">综合工程实践</div></div>
-      <div class="cur-item"><div class="cur-item-tag">必修</div><div class="cur-item-name">毕业设计 / 论文</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">城市交通治理</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">交通仿真与评估</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">科研方法与写作</div></div>
-      <div class="cur-item"><div class="cur-item-tag">选修</div><div class="cur-item-name">前沿技术专题</div></div>
+    <div id="p4" class="tab-panel">
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">智能交通系统</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">车路协同技术</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">综合工程实践</div></div>
+      <div class="cur-card"><div class="cur-tag">必修</div><div class="cur-name">毕业设计 / 论文</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">城市交通治理</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">交通仿真与评估</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">科研方法与写作</div></div>
+      <div class="cur-card"><div class="cur-tag">选修</div><div class="cur-name">前沿技术专题</div></div>
     </div>
   </div>
 </section>
 
 <!-- TRAINING -->
-<section class="section" id="training">
-  <div class="section-inner">
-    <div class="section-head rv">
-      <div class="section-label">Training Path</div>
-      <h2 class="section-title">四阶培养路径</h2>
-      <p class="section-body">从理论奠基到独立科研产出，系统进阶，面向学术与产业的双轨成长体系。</p>
+<section class="sec" id="training">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="sec-lbl gsap-hidden">Training Path</div>
+      <h2 class="sec-h2 gsap-hidden">四阶培养路径</h2>
+      <p class="sec-p gsap-hidden">从理论奠基到独立科研产出，系统进阶，面向学术与产业的双轨成长体系。</p>
     </div>
     <div class="tl">
-      <div class="tl-step">
-        <div class="tl-left">
-          <div class="tl-circle" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">1</div>
-          <div class="tl-line"></div>
-        </div>
-        <div class="tl-right">
-          <div class="tl-num">Phase 01 · 基础构建</div>
-          <div class="tl-title">理论知识体系搭建</div>
-          <div class="tl-body">夯实交通工程、数学建模、编程设计与自动控制原理等核心理论，建立跨学科思维框架，完成工程认知实习与专业导论培训。</div>
-          <div class="tl-chips"><span class="tl-chip">交通工程基础</span><span class="tl-chip">数学建模</span><span class="tl-chip">Python / C++</span><span class="tl-chip">工程认知</span></div>
-        </div>
+      <div class="tl-item gsap-hidden-l">
+        <div class="tl-left"><div class="tl-num-circle" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">1</div><div class="tl-connector"></div></div>
+        <div class="tl-right"><div class="tl-phase">Phase 01 · 基础构建</div><div class="tl-title">理论知识体系搭建</div><div class="tl-body">夯实交通工程、数学建模、编程设计与自动控制原理等核心理论，建立跨学科思维框架，完成工程认知实习与专业导论培训。</div><div class="tl-chips"><span class="chip">交通工程基础</span><span class="chip">数学建模</span><span class="chip">Python / C++</span><span class="chip">工程认知</span></div></div>
       </div>
-      <div class="tl-step">
-        <div class="tl-left">
-          <div class="tl-circle" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">2</div>
-          <div class="tl-line"></div>
-        </div>
-        <div class="tl-right">
-          <div class="tl-num">Phase 02 · 数据与算法</div>
-          <div class="tl-title">数据驱动能力训练</div>
-          <div class="tl-body">开展交通调查实验、大数据处理与可视化、机器学习建模实训，完成从原始数据到可用洞察的完整工程流程，掌握 SUMO 仿真工具。</div>
-          <div class="tl-chips"><span class="tl-chip">交通调查</span><span class="tl-chip">数据清洗</span><span class="tl-chip">机器学习</span><span class="tl-chip">SUMO 仿真</span></div>
-        </div>
+      <div class="tl-item gsap-hidden-l">
+        <div class="tl-left"><div class="tl-num-circle" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">2</div><div class="tl-connector"></div></div>
+        <div class="tl-right"><div class="tl-phase">Phase 02 · 数据与算法</div><div class="tl-title">数据驱动能力训练</div><div class="tl-body">开展交通调查实验、大数据处理与可视化、机器学习建模实训，完成从原始数据到可用洞察的完整工程流程，掌握 SUMO 仿真平台。</div><div class="tl-chips"><span class="chip">交通调查</span><span class="chip">数据清洗</span><span class="chip">机器学习</span><span class="chip">SUMO 仿真</span></div></div>
       </div>
-      <div class="tl-step">
-        <div class="tl-left">
-          <div class="tl-circle" style="background:linear-gradient(135deg,#06b6d4,#10b981)">3</div>
-          <div class="tl-line"></div>
-        </div>
-        <div class="tl-right">
-          <div class="tl-num">Phase 03 · 系统与控制</div>
-          <div class="tl-title">工程系统开发实践</div>
-          <div class="tl-body">结合真实路网场景开发信号控制系统，搭建交通信息平台原型，参与校企联合项目与学科竞赛，积累端到端的完整工程实战经验。</div>
-          <div class="tl-chips"><span class="tl-chip">信号控制</span><span class="tl-chip">平台原型</span><span class="tl-chip">联合仿真</span><span class="tl-chip">竞赛</span></div>
-        </div>
+      <div class="tl-item gsap-hidden-l">
+        <div class="tl-left"><div class="tl-num-circle" style="background:linear-gradient(135deg,#06b6d4,#10b981)">3</div><div class="tl-connector"></div></div>
+        <div class="tl-right"><div class="tl-phase">Phase 03 · 系统与控制</div><div class="tl-title">工程系统开发实践</div><div class="tl-body">结合真实路网场景开发信号控制系统，搭建交通信息平台原型，参与校企联合项目与学科竞赛，积累端到端完整工程实战经验。</div><div class="tl-chips"><span class="chip">信号控制</span><span class="chip">平台原型</span><span class="chip">联合仿真</span><span class="chip">竞赛</span></div></div>
       </div>
-      <div class="tl-step">
-        <div class="tl-left">
-          <div class="tl-circle" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">4</div>
-        </div>
-        <div class="tl-right">
-          <div class="tl-num">Phase 04 · 科研与创新</div>
-          <div class="tl-title">独立创新成果输出</div>
-          <div class="tl-body">参与省部级课题、企业横向项目或国际合作，以高水平期刊论文、专利或工程项目完成独立创新成果，为学术深造或产业就业做好充分准备。</div>
-          <div class="tl-chips"><span class="tl-chip">科研课题</span><span class="tl-chip">SCI / EI 论文</span><span class="tl-chip">专利申请</span><span class="tl-chip">国际合作</span></div>
-        </div>
+      <div class="tl-item gsap-hidden-l">
+        <div class="tl-left"><div class="tl-num-circle" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">4</div></div>
+        <div class="tl-right"><div class="tl-phase">Phase 04 · 科研与创新</div><div class="tl-title">独立创新成果输出</div><div class="tl-body">参与省部级课题、企业横向项目或国际合作，以高水平期刊论文、专利或工程项目完成独立创新成果，面向学术深造或产业就业双轨发展。</div><div class="tl-chips"><span class="chip">科研课题</span><span class="chip">SCI / EI 论文</span><span class="chip">专利申请</span><span class="chip">国际合作</span></div></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CAREER -->
-<section class="section section-alt" id="career">
-  <div class="section-inner">
-    <div class="section-head rv">
-      <div class="section-label">Career Development</div>
-      <h2 class="section-title">就业与发展方向</h2>
-      <p class="section-body">政府、科研、产业、学术四大赛道，覆盖从工程实践到学术前沿的广阔发展前景。</p>
+<section class="sec sec-alt" id="career">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="sec-lbl gsap-hidden">Career Development</div>
+      <h2 class="sec-h2 gsap-hidden">就业与发展方向</h2>
+      <p class="sec-p gsap-hidden">政府、科研、产业、学术四大赛道，覆盖从工程实践到学术前沿的广阔发展前景。</p>
     </div>
     <div class="career-grid">
-      <div class="career-card rv">
-        <div class="career-icon">🏛️</div>
-        <h3>政府交通管理机构</h3>
-        <p>参与城市智慧交管平台建设、交通政策研究与绩效评估，推动交通治理数字化转型。</p>
-        <div class="career-items">
-          <span class="career-item">交通运输局 / 公安交管局</span>
-          <span class="career-item">城市交通指挥中心</span>
-          <span class="career-item">交通运输部直属单位</span>
-        </div>
-      </div>
-      <div class="career-card rv rv2">
-        <div class="career-icon">🏗️</div>
-        <h3>交通规划设计院</h3>
-        <p>承担交通信息系统规划、智慧道路设计及交通组织优化，主导大型交通工程项目。</p>
-        <div class="career-items">
-          <span class="career-item">综合交通规划研究院</span>
-          <span class="career-item">城市轨道交通设计院</span>
-          <span class="career-item">公路勘察设计研究院</span>
-        </div>
-      </div>
-      <div class="career-card rv rv3">
-        <div class="career-icon">💻</div>
-        <h3>智能交通科技企业</h3>
-        <p>从事交通大数据产品、信号控制系统与车路协同平台的算法研发与系统工程化落地。</p>
-        <div class="career-items">
-          <span class="career-item">华为 / 阿里 / 滴滴 / 百度</span>
-          <span class="career-item">海信 / 大华 / 千方科技</span>
-          <span class="career-item">智慧城市解决方案商</span>
-        </div>
-      </div>
-      <div class="career-card rv">
-        <div class="career-icon">🚆</div>
-        <h3>轨道与综合运输行业</h3>
-        <p>支撑城市轨道、铁路和物流的运营调度、客流分析与信息系统建设。</p>
-        <div class="career-items">
-          <span class="career-item">城市地铁公司</span>
-          <span class="career-item">铁路局集团</span>
-          <span class="career-item">港口与现代物流平台</span>
-        </div>
-      </div>
-      <div class="career-card rv rv2">
-        <div class="career-icon">🔬</div>
-        <h3>科研院所</h3>
-        <p>在交通运输、控制或计算机领域的国家级科研平台从事基础研究与关键技术攻关。</p>
-        <div class="career-items">
-          <span class="career-item">交通运输研究院</span>
-          <span class="career-item">中科院相关研究所</span>
-          <span class="career-item">国家重点实验室</span>
-        </div>
-      </div>
-      <div class="career-card rv rv3">
-        <div class="career-icon">🎓</div>
-        <h3>学术深造</h3>
-        <p>继续攻读博士或出国深造，在交通、控制、AI 等多方向投身学术科研与高校教学。</p>
-        <div class="career-items">
-          <span class="career-item">国内顶校博士项目</span>
-          <span class="career-item">海外联培 / 全额奖学金</span>
-          <span class="career-item">博士后 → 高校教职</span>
-        </div>
-      </div>
+      <div class="career-card gsap-hidden"><div class="career-icon">🏛️</div><h3>政府交通管理机构</h3><p>参与城市智慧交管平台建设、交通政策研究与绩效评估，推动交通治理数字化转型。</p><ul class="career-list"><li>交通运输局 / 公安交管局</li><li>城市交通指挥中心</li><li>交通运输部直属单位</li></ul></div>
+      <div class="career-card gsap-hidden"><div class="career-icon">🏗️</div><h3>交通规划设计院</h3><p>承担交通信息系统规划、智慧道路设计及交通组织优化，主导大型交通工程项目规划建设。</p><ul class="career-list"><li>综合交通规划研究院</li><li>城市轨道交通设计院</li><li>公路勘察设计研究院</li></ul></div>
+      <div class="career-card gsap-hidden"><div class="career-icon">💻</div><h3>智能交通科技企业</h3><p>从事交通大数据产品、信号控制系统与车路协同平台的算法研发与系统工程化落地。</p><ul class="career-list"><li>华为 / 阿里 / 滴滴 / 百度</li><li>海信 / 大华 / 千方科技</li><li>智慧城市解决方案商</li></ul></div>
+      <div class="career-card gsap-hidden"><div class="career-icon">🚆</div><h3>轨道与综合运输行业</h3><p>支撑城市轨道、铁路和物流的运营调度、客流分析与信息系统建设与运维。</p><ul class="career-list"><li>城市地铁公司</li><li>铁路局集团</li><li>港口与现代物流平台</li></ul></div>
+      <div class="career-card gsap-hidden"><div class="career-icon">🔬</div><h3>科研院所</h3><p>在交通运输、控制或计算机领域的国家级科研平台从事基础研究与关键技术攻关。</p><ul class="career-list"><li>交通运输研究院</li><li>中科院相关研究所</li><li>国家重点实验室</li></ul></div>
+      <div class="career-card gsap-hidden"><div class="career-icon">🎓</div><h3>学术深造</h3><p>继续攻读博士或出国深造，在交通、控制、AI 等多方向投身学术科研与高校教学岗位。</p><ul class="career-list"><li>国内顶校博士项目</li><li>海外联培 / 全额奖学金</li><li>博士后 → 高校教职</li></ul></div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta">
-  <div class="section-inner" style="text-align:center">
-    <div class="section-label rv" style="justify-content:center">Get Started</div>
-    <h2 class="rv rv2">连接数据与城市<br>智慧的未来</h2>
-    <p class="rv rv3">交通信息工程及控制是智慧交通时代最具发展潜力的学科方向之一，欢迎加入这一融合前沿技术与城市治理的复合型领域。</p>
-    <div class="cta-actions rv rv4">
-      <a class="btn-lg btn-primary" href="#pipeline">开始了解</a>
-      <a class="btn-lg btn-secondary" href="#directions">探索研究方向</a>
+  <div class="sec-inner">
+    <div class="sec-lbl gsap-hidden" style="justify-content:center">Get Started</div>
+    <h2 class="gsap-hidden">连接数据<br>与城市智慧</h2>
+    <p class="gsap-hidden">交通信息工程及控制是智慧交通时代最具发展潜力的学科方向之一，欢迎加入这一融合前沿技术与城市治理的复合型领域。</p>
+    <div class="cta-btns gsap-hidden">
+      <a class="btn-hero btn-p magnetic" href="#pipeline">开始了解</a>
+      <a class="btn-hero btn-s magnetic" href="#directions">探索研究方向</a>
     </div>
   </div>
 </section>
@@ -1027,25 +779,20 @@ footer a:hover { color:var(--t1) }
 <footer>
   <span>交通信息工程及控制 — 专业介绍</span>
   <div style="display:flex;gap:24px;align-items:center">
-    <a href="#pipeline">概览</a>
-    <a href="#directions">方向</a>
-    <a href="#career">就业</a>
-    <a href="#top">↑ 返回顶部</a>
+    <a href="#pipeline">概览</a><a href="#directions">方向</a><a href="#career">就业</a>
+    <a href="#top" style="color:var(--blue)">↑ 返回顶部</a>
   </div>
 </footer>
 
 <!-- MODAL -->
 <div class="overlay" id="overlay">
-  <div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-hdr">
-      <div class="modal-hdr-left">
-        <div class="modal-hdr-icon" id="mIcon">📡</div>
-        <div>
-          <div class="modal-subtitle">B 站推荐学习资源</div>
-          <h3 id="mTitle">加载中…</h3>
-        </div>
+      <div class="modal-hdr-l">
+        <div class="modal-icon" id="mIcon">📡</div>
+        <div><div class="modal-sub">B 站推荐学习资源</div><h3 id="mTitle">—</h3></div>
       </div>
-      <button class="modal-x" id="mClose" aria-label="关闭">✕</button>
+      <button class="modal-close" id="mClose">✕</button>
     </div>
     <div class="modal-body">
       <p class="modal-desc" id="mDesc"></p>
@@ -1055,98 +802,271 @@ footer a:hover { color:var(--t1) }
 </div>
 
 <script>
-/* ─── Particle canvas ─── */
+/* ═══ GSAP SETUP ═══ */
+gsap.registerPlugin(ScrollTrigger);
+
+/* ═══ LOADER ═══ */
 (function(){
-  const c=document.getElementById('heroCanvas'),x=c.getContext('2d');
-  let W,H,pts=[];
-  function resize(){ W=c.width=c.offsetWidth; H=c.height=c.offsetHeight }
-  window.addEventListener('resize',()=>{ resize(); build() });
-  resize();
-  const COLORS=['rgba(59,130,246,.8)','rgba(99,102,241,.8)','rgba(6,182,212,.8)'];
-  function build(){
-    pts=[];
-    const n=Math.floor(W*H/9000);
-    for(let i=0;i<n;i++) pts.push({
-      x:Math.random()*W, y:Math.random()*H,
-      vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35,
-      r:Math.random()*2+1,
-      c:COLORS[Math.floor(Math.random()*COLORS.length)]
+  const bar=document.getElementById('loaderBar');
+  const pct=document.getElementById('loaderPct');
+  const logo=document.getElementById('loaderLogo');
+  const loader=document.getElementById('loader');
+  let p=0;
+  gsap.to(logo,{opacity:1,y:0,duration:.6,ease:'power2.out'});
+  const iv=setInterval(()=>{
+    p+=Math.random()*18;
+    if(p>=100){p=100;clearInterval(iv)}
+    bar.style.width=p+'%';
+    pct.textContent=Math.floor(p)+'%';
+    if(p>=100){
+      setTimeout(()=>{
+        gsap.to(loader,{opacity:0,duration:.6,ease:'power2.inOut',onComplete:()=>{
+          loader.style.display='none';
+          startHero();
+        }});
+      },300);
+    }
+  },60);
+})();
+
+/* ═══ CUSTOM CURSOR ═══ */
+(function(){
+  const dot=document.getElementById('cursor');
+  const ring=document.getElementById('cursor-ring');
+  let rx=0,ry=0,tx=0,ty=0;
+  document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+  (function loop(){
+    rx+=(tx-rx)*.18; ry+=(ty-ry)*.18;
+    dot.style.left=tx+'px'; dot.style.top=ty+'px';
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button,.dir-card,.pipe-card,.career-card,.cur-card,.mlink').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{dot.classList.add('hovered');ring.classList.add('hovered')});
+    el.addEventListener('mouseleave',()=>{dot.classList.remove('hovered');ring.classList.remove('hovered')});
+  });
+})();
+
+/* ═══ HERO ENTRANCE ═══ */
+function startHero(){
+  /* split title into chars */
+  const title=document.getElementById('heroTitle');
+  const words=title.querySelectorAll('.word');
+  words.forEach(w=>{
+    const txt=w.childNodes;
+    txt.forEach(node=>{
+      if(node.nodeType===3&&node.textContent.trim()){
+        const chars=node.textContent.split('');
+        const span=document.createElement('span');
+        chars.forEach(ch=>{
+          const c=document.createElement('span');
+          c.className='char'; c.textContent=ch; span.appendChild(c);
+        });
+        node.replaceWith(span);
+      }
     });
-  }
-  build();
-  let mx=-1,my=-1;
-  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY });
-  function draw(){
-    x.clearRect(0,0,W,H);
-    /* edges */
-    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
-      const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
-      if(d<150){ x.beginPath(); x.moveTo(pts[i].x,pts[i].y); x.lineTo(pts[j].x,pts[j].y);
-        x.strokeStyle=`rgba(59,130,246,${(1-d/150)*.2})`; x.lineWidth=.8; x.stroke() }
+  });
+
+  const tl=gsap.timeline();
+  tl.to('.hero-badge',{opacity:1,y:0,duration:.8,ease:'power3.out'})
+    .to('.hero-title .char',{
+      y:0,duration:.7,stagger:.04,ease:'power3.out'
+    },'-=.4')
+    .to('#heroEn',{opacity:1,duration:.7,ease:'power2.out'},'-=.2')
+    .to('#heroBody',{opacity:1,y:0,duration:.7,ease:'power3.out'},'-=.4')
+    .to('#heroActions',{opacity:1,y:0,duration:.6,ease:'power3.out'},'-=.4')
+    .to('#heroStats',{opacity:1,x:0,duration:.7,ease:'power3.out'},'-=.5')
+    .to('#heroScroll',{opacity:1,duration:.5},'-=.3');
+}
+
+/* ═══ HERO CANVAS ═══ */
+(function(){
+  const c=document.getElementById('heroCanvas'),ctx=c.getContext('2d');
+  let W,H,pts=[];
+  const resize=()=>{W=c.width=c.offsetWidth;H=c.height=c.offsetHeight};
+  window.addEventListener('resize',()=>{resize();init()});
+  resize();
+  const COLS=['rgba(59,130,246,.85)','rgba(99,102,241,.85)','rgba(6,182,212,.85)','rgba(139,92,246,.7)'];
+  const init=()=>{
+    pts=[];
+    const n=Math.floor(W*H/8000);
+    for(let i=0;i<n;i++) pts.push({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+      r:Math.random()*2.5+1,
+      c:COLS[Math.floor(Math.random()*COLS.length)],
+      phase:Math.random()*Math.PI*2
+    });
+  };
+  init();
+  let mx=-1,my=-1,t=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  const draw=()=>{
+    ctx.clearRect(0,0,W,H);t+=.008;
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<160){
+          const a=(1-d/160)*.22;
+          ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(59,130,246,${a})`;ctx.lineWidth=.7;ctx.stroke();
+        }
+      }
     }
     pts.forEach(p=>{
-      /* subtle mouse attract */
-      const dx=mx-p.x, dy=my-p.y, d=Math.sqrt(dx*dx+dy*dy);
-      if(d<200&&d>0){ p.vx+=dx/d*.012; p.vy+=dy/d*.012 }
+      /* mouse attract */
+      const dx=mx-p.x,dy=my-p.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<200&&d>0){p.vx+=dx/d*.014;p.vy+=dy/d*.014}
       const sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
-      if(sp>1.0){ p.vx*=1.0/sp; p.vy*=1.0/sp }
-      x.beginPath(); x.arc(p.x,p.y,p.r,0,Math.PI*2);
-      x.fillStyle=p.c; x.fill();
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0||p.x>W) p.vx*=-1;
-      if(p.y<0||p.y>H) p.vy*=-1;
+      if(sp>1.1){p.vx*=1.1/sp;p.vy*=1.1/sp}
+      /* subtle float */
+      const fy=Math.sin(t+p.phase)*.2;
+      /* draw glow */
+      const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
+      g.addColorStop(0,'rgba(59,130,246,.2)');g.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*5,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c;ctx.fill();
+      p.x+=p.vx;p.y+=p.vy+fy*.01;
+      if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
     });
     requestAnimationFrame(draw);
-  }
+  };
   draw();
 })();
 
-/* ─── Scroll reveal ─── */
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target) } });
-},{threshold:.1});
-document.querySelectorAll('.rv,.tl-step').forEach(el=>io.observe(el));
+/* ═══ GSAP SCROLL ANIMATIONS ═══ */
+gsap.utils.toArray('.gsap-hidden').forEach(el=>{
+  gsap.to(el,{
+    opacity:1,y:0,duration:.8,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}
+  });
+});
+gsap.utils.toArray('.gsap-hidden-l').forEach((el,i)=>{
+  gsap.to(el,{
+    opacity:1,x:0,duration:.8,delay:i*.12,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}
+  });
+});
 
-/* ─── Counters ─── */
+/* Stagger for pipeline cards */
+ScrollTrigger.create({
+  trigger:'.pipeline',start:'top 85%',
+  onEnter:()=>{
+    gsap.to('.pipe-card',{opacity:1,y:0,duration:.65,stagger:.08,ease:'power3.out'});
+  }
+});
+/* Stagger for dir cards */
+ScrollTrigger.create({
+  trigger:'.dir-grid',start:'top 85%',
+  onEnter:()=>{
+    gsap.to('.dir-card',{opacity:1,y:0,duration:.7,stagger:.1,ease:'power3.out'});
+  }
+});
+/* Stagger career */
+ScrollTrigger.create({
+  trigger:'.career-grid',start:'top 85%',
+  onEnter:()=>{
+    gsap.to('.career-card',{opacity:1,y:0,duration:.65,stagger:.08,ease:'power3.out'});
+  }
+});
+/* Stats */
+ScrollTrigger.create({
+  trigger:'.stats-grid',start:'top 85%',
+  onEnter:()=>{
+    gsap.to('.stat',{opacity:1,y:0,duration:.6,stagger:.1,ease:'power3.out'});
+  }
+});
+
+/* ═══ COUNTERS ═══ */
 const cio=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
-    if(!e.isIntersecting) return;
-    const el=e.target, t=+el.dataset.t, dur=t>500?2200:1400;
-    let s=null;
-    (function tick(ts){ if(!s)s=ts; const p=Math.min((ts-s)/dur,1), ease=1-Math.pow(1-p,4);
-      el.textContent=Math.floor(ease*t).toLocaleString(); if(p<1) requestAnimationFrame(tick);
-      else el.textContent=t.toLocaleString();
-    })(performance.now());
+    if(!e.isIntersecting)return;
+    const el=e.target,t=+el.dataset.t,dur=t>500?2400:1500;
+    gsap.to({val:0},{val:t,duration:dur/1000,ease:'power2.out',
+      onUpdate:function(){el.textContent=Math.floor(this.targets()[0].val).toLocaleString()},
+      onComplete:()=>{el.textContent=t.toLocaleString()}
+    });
     cio.unobserve(el);
   });
 },{threshold:.5});
 document.querySelectorAll('.cnt').forEach(el=>cio.observe(el));
 
-/* ─── Curriculum tabs ─── */
-document.querySelectorAll('.cur-tab').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.cur-tab').forEach(b=>b.classList.remove('on'));
-    document.querySelectorAll('.cur-panel').forEach(p=>p.classList.remove('on'));
-    btn.classList.add('on');
-    document.getElementById(btn.dataset.p).classList.add('on');
+/* ═══ 3D TILT + SPOTLIGHT ═══ */
+document.querySelectorAll('.dir-card,.pipe-card,.career-card').forEach(card=>{
+  const spotlight=card.querySelector('.dir-card-spotlight,.pipe-card-spotlight');
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const dx=(e.clientX-cx)/r.width*2,dy=(e.clientY-cy)/r.height*2;
+    const rx=dy*-10,ry=dx*10;
+    gsap.to(card,{
+      rotateX:rx,rotateY:ry,scale:1.015,
+      duration:.3,ease:'power2.out',
+      transformPerspective:800,transformOrigin:'center center'
+    });
+    /* spotlight */
+    if(spotlight){
+      const mx=e.clientX-r.left,my=e.clientY-r.top;
+      card.style.setProperty('--mx',mx+'px');
+      card.style.setProperty('--my',my+'px');
+    }
+  });
+  card.addEventListener('mouseleave',()=>{
+    gsap.to(card,{rotateX:0,rotateY:0,scale:1,duration:.4,ease:'power2.out'});
   });
 });
 
-/* ─── Active nav ─── */
+/* ═══ MAGNETIC BUTTONS ═══ */
+document.querySelectorAll('.magnetic').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const dx=(e.clientX-r.left-r.width/2)*.35;
+    const dy=(e.clientY-r.top-r.height/2)*.35;
+    gsap.to(btn,{x:dx,y:dy,duration:.3,ease:'power2.out'});
+  });
+  btn.addEventListener('mouseleave',()=>{
+    gsap.to(btn,{x:0,y:0,duration:.5,ease:'elastic.out(1,.5)'});
+  });
+});
+
+/* ═══ TABS ═══ */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    const panel=document.getElementById(t.dataset.p);
+    panel.classList.add('on');
+    /* animate cards in */
+    gsap.fromTo(panel.querySelectorAll('.cur-card'),
+      {opacity:0,y:12},
+      {opacity:1,y:0,duration:.4,stagger:.04,ease:'power2.out'}
+    );
+  });
+});
+
+/* ═══ ACTIVE NAV ═══ */
 (function(){
   const secs=[...document.querySelectorAll('section[id]')];
   const links=[...document.querySelectorAll('.nav-links a')];
   window.addEventListener('scroll',()=>{
-    const y=window.scrollY+80; let cur='';
-    secs.forEach(s=>{ if(y>=s.offsetTop) cur=s.id });
-    links.forEach(a=>{ a.classList.toggle('on',a.getAttribute('href')==='#'+cur) });
-  },{ passive:true });
+    const y=window.scrollY+80;let cur='';
+    secs.forEach(s=>{if(y>=s.offsetTop)cur=s.id});
+    links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
+  },{passive:true});
 })();
 
-/* ─── Modal data ─── */
-const DATA={
+/* ═══ PARALLAX HERO ═══ */
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  document.querySelector('.hero-inner').style.transform=`translateY(${y*.25}px)`;
+  document.querySelector('.hero-grid').style.transform=`translateY(${y*.1}px)`;
+},{passive:true});
+
+/* ═══ MODAL ═══ */
+const MODAL={
   m1:{icon:'📡',title:'交通信息感知与采集',
-    desc:'交通感知是智慧交通的数据入口，涵盖视频检测、雷达感知与多源融合。以下 B 站视频覆盖从入门原理到前沿实战的完整学习路径。',
+    desc:'交通感知是智慧交通的数据入口，涵盖视频检测、雷达感知与多源融合。以下视频覆盖从入门原理到前沿实战的完整路径。',
     links:[
       {icon:'📹',title:'交通视频车辆检测实战',sub:'YOLO · DeepSORT · OpenCV',url:'https://search.bilibili.com/video?keyword=交通视频车辆检测YOLO&order=click'},
       {icon:'📡',title:'毫米波雷达原理与交通应用',sub:'目标检测 · 信号处理 · 数据融合',url:'https://search.bilibili.com/video?keyword=毫米波雷达交通感知&order=click'},
@@ -1165,54 +1085,45 @@ const DATA={
     desc:'将数据分析成果转化为路网实时干预，涵盖信号控制原理、SUMO 仿真与强化学习控制前沿方法。',
     links:[
       {icon:'🚦',title:'交通信号控制系统原理',sub:'Webster · 感应控制 · SCATS',url:'https://search.bilibili.com/video?keyword=交通信号控制原理&order=click'},
-      {icon:'🖥️',title:'SUMO 交通仿真从入门到实战',sub:'路网建模 · 信号优化 · TraCI 接口',url:'https://search.bilibili.com/video?keyword=SUMO交通仿真教程&order=click'},
+      {icon:'🖥️',title:'SUMO 交通仿真从入门到实战',sub:'路网建模 · 信号优化 · TraCI',url:'https://search.bilibili.com/video?keyword=SUMO交通仿真教程&order=click'},
       {icon:'🤖',title:'强化学习交通信号控制',sub:'DQN · PPO · 多智能体 MARL',url:'https://search.bilibili.com/video?keyword=强化学习交通信号控制&order=click'},
       {icon:'🏎️',title:'高速公路匝道控制策略',sub:'ALINEA · MPC · 速度协调',url:'https://search.bilibili.com/video?keyword=高速公路匝道控制&order=click'},
     ]},
   m4:{icon:'🚗',title:'车路协同与智能交通系统',
-    desc:'当前最热门的前沿研究方向，聚焦自动驾驶测试、数字孪生验证与 MaaS 出行平台构建。',
+    desc:'当前最热门的前沿方向，聚焦自动驾驶测试、数字孪生验证与 MaaS 出行平台构建。',
     links:[
       {icon:'🚗',title:'自动驾驶技术全栈讲解',sub:'感知 · 规划 · 控制 · 仿真',url:'https://search.bilibili.com/video?keyword=自动驾驶技术全栈&order=click'},
       {icon:'🏙️',title:'数字孪生城市与交通仿真',sub:'CARLA · Unity · 城市建模',url:'https://search.bilibili.com/video?keyword=数字孪生交通仿真CARLA&order=click'},
-      {icon:'📱',title:'MaaS 出行即服务系统解析',sub:'多模式出行 · 平台架构 · 碳减排',url:'https://search.bilibili.com/video?keyword=MaaS出行服务智慧交通&order=click'},
-      {icon:'🛣️',title:'智能网联汽车车路协同',sub:'OBU · RSU · C-ITS 标准体系',url:'https://search.bilibili.com/video?keyword=智能网联汽车车路协同&order=click'},
+      {icon:'📱',title:'MaaS 出行即服务系统',sub:'多模式出行 · 平台架构 · 碳减排',url:'https://search.bilibili.com/video?keyword=MaaS出行服务智慧交通&order=click'},
+      {icon:'🛣️',title:'智能网联汽车车路协同',sub:'OBU · RSU · C-ITS 标准',url:'https://search.bilibili.com/video?keyword=智能网联汽车车路协同&order=click'},
     ]},
 };
 
-/* ─── Modal UI ─── */
 (function(){
   const ov=document.getElementById('overlay');
-  const mIcon=document.getElementById('mIcon');
-  const mTitle=document.getElementById('mTitle');
-  const mDesc=document.getElementById('mDesc');
-  const mLinks=document.getElementById('mLinks');
-  const mClose=document.getElementById('mClose');
-
   function open(id){
-    const d=DATA[id]; if(!d) return;
-    mIcon.textContent=d.icon;
-    mTitle.textContent=d.title;
-    mDesc.textContent=d.desc;
-    mLinks.innerHTML=d.links.map(l=>`
-      <a class="modal-link" href="${l.url}" target="_blank" rel="noopener noreferrer">
-        <div class="modal-link-icon">${l.icon}</div>
-        <div class="modal-link-text">
-          <strong>${l.title}</strong>
-          <span>${l.sub}</span>
-        </div>
-        <span class="modal-link-arr">→</span>
+    const d=MODAL[id];if(!d)return;
+    document.getElementById('mIcon').textContent=d.icon;
+    document.getElementById('mTitle').textContent=d.title;
+    document.getElementById('mDesc').textContent=d.desc;
+    document.getElementById('mLinks').innerHTML=d.links.map(l=>`
+      <a class="mlink" href="${l.url}" target="_blank" rel="noopener">
+        <div class="mlink-icon">${l.icon}</div>
+        <div class="mlink-text"><strong>${l.title}</strong><span>${l.sub}</span></div>
+        <span class="mlink-arr">→</span>
       </a>`).join('');
-    ov.classList.add('on');
-    document.body.style.overflow='hidden';
+    /* hover cursor for new links */
+    document.querySelectorAll('.mlink').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{document.getElementById('cursor').classList.add('hovered');document.getElementById('cursor-ring').classList.add('hovered')});
+      el.addEventListener('mouseleave',()=>{document.getElementById('cursor').classList.remove('hovered');document.getElementById('cursor-ring').classList.remove('hovered')});
+    });
+    ov.classList.add('on');document.body.style.overflow='hidden';
   }
-  function close(){
-    ov.classList.remove('on');
-    document.body.style.overflow='';
-  }
+  function close(){ov.classList.remove('on');document.body.style.overflow='';}
   document.querySelectorAll('.dir-card[data-m]').forEach(c=>c.addEventListener('click',()=>open(c.dataset.m)));
-  mClose.addEventListener('click',close);
-  ov.addEventListener('click',e=>{ if(e.target===ov) close() });
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape') close() });
+  document.getElementById('mClose').addEventListener('click',close);
+  ov.addEventListener('click',e=>{if(e.target===ov)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 })();
 </script>
 </body>
