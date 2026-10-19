@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="330" viewBox="0 0 1200 330" role="img" aria-label="张云翔 交通行为建模 策略仿真 资源优化">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b1726"/><stop offset="1" stop-color="#163c4a"/></linearGradient><pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38" fill="none" stroke="#a7d4dc" stroke-opacity=".09"/></pattern></defs>
+<rect width="1200" height="330" rx="18" fill="url(#bg)"/><rect width="1200" height="330" rx="18" fill="url(#grid)"/>
+<path d="M858 44V286M780 112H1142M780 218H1142" stroke="#7ba4ab" stroke-opacity=".22"/>
+<g fill="none" stroke="#7fd3cf" stroke-width="2"><path d="M787 240C850 240 830 90 906 90S947 204 1006 204 1061 67 1137 67"/><path d="M787 260C855 260 857 174 923 174S1020 126 1137 126" opacity=".4"/></g>
+<g fill="#a4e3da"><circle cx="906" cy="90" r="5"/><circle cx="1006" cy="204" r="5"/><circle cx="1137" cy="67" r="5"/></g>
+<g font-family="Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif"><text x="60" y="61" fill="#9cc9ce" font-size="13" letter-spacing="4">TRANSPORTATION · DECISION SCIENCE</text><text x="57" y="141" fill="#fff" font-size="54" font-weight="700">张云翔</text><text x="60" y="178" fill="#bdd0d7" font-size="19" letter-spacing="2">YUNXIANG ZHANG</text><text x="60" y="232" fill="#edf6f6" font-size="22">行为建模 / 策略仿真 / 资源优化</text><text x="60" y="279" fill="#9cc9ce" font-size="14">PhD, Jilin University · Chengdu, China</text></g></svg>

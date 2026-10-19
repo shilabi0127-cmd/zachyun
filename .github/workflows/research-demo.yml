@@ -1,0 +1,25 @@
+name: Research demo checks
+on:
+  push:
+    paths:
+      - 'examples/**'
+      - '.github/workflows/research-demo.yml'
+  pull_request:
+    paths:
+      - 'examples/**'
+      - '.github/workflows/research-demo.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m unittest discover -s examples/tests -v
+      - run: python examples/parking_allocation_demo.py --trials 100

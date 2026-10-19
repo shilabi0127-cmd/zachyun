@@ -1,0 +1,136 @@
+{
+  "scope": "synthetic illustration; not a thesis replication",
+  "seed": 20261019,
+  "trials": 1000,
+  "bays": 2,
+  "units": "minutes",
+  "conflict_denominator": "accepted requests times trials",
+  "requests": [
+    {
+      "key": "A",
+      "start": 0,
+      "end": 30,
+      "weight": 5,
+      "guard": 6
+    },
+    {
+      "key": "B",
+      "start": 0,
+      "end": 30,
+      "weight": 2,
+      "guard": 3
+    },
+    {
+      "key": "C",
+      "start": 30,
+      "end": 60,
+      "weight": 5,
+      "guard": 6
+    },
+    {
+      "key": "D",
+      "start": 38,
+      "end": 68,
+      "weight": 2,
+      "guard": 3
+    },
+    {
+      "key": "E",
+      "start": 60,
+      "end": 90,
+      "weight": 5,
+      "guard": 6
+    },
+    {
+      "key": "F",
+      "start": 76,
+      "end": 106,
+      "weight": 2,
+      "guard": 3
+    },
+    {
+      "key": "G",
+      "start": 90,
+      "end": 120,
+      "weight": 5,
+      "guard": 6
+    },
+    {
+      "key": "H",
+      "start": 114,
+      "end": 144,
+      "weight": 2,
+      "guard": 3
+    }
+  ],
+  "policies": {
+    "nominal": {
+      "accepted_requests": 8,
+      "total_requests": 8,
+      "accepted_weight": 28,
+      "request_conflict_rate": 0.724,
+      "assignments": [
+        {
+          "key": "A",
+          "bay": 0
+        },
+        {
+          "key": "B",
+          "bay": 1
+        },
+        {
+          "key": "C",
+          "bay": 0
+        },
+        {
+          "key": "D",
+          "bay": 1
+        },
+        {
+          "key": "E",
+          "bay": 0
+        },
+        {
+          "key": "F",
+          "bay": 1
+        },
+        {
+          "key": "G",
+          "bay": 0
+        },
+        {
+          "key": "H",
+          "bay": 1
+        }
+      ]
+    },
+    "buffered": {
+      "accepted_requests": 5,
+      "total_requests": 8,
+      "accepted_weight": 22,
+      "request_conflict_rate": 0.0,
+      "assignments": [
+        {
+          "key": "A",
+          "bay": 0
+        },
+        {
+          "key": "C",
+          "bay": 1
+        },
+        {
+          "key": "E",
+          "bay": 0
+        },
+        {
+          "key": "G",
+          "bay": 1
+        },
+        {
+          "key": "H",
+          "bay": 0
+        }
+      ]
+    }
+  }
+}
