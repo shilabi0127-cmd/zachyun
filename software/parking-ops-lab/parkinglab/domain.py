@@ -18,6 +18,8 @@ class Reservation(BaseModel):
     arrival_std: float = Field(default=4, ge=0, le=60)
     departure_mean: float = Field(default=4, ge=-60, le=60)
     departure_std: float = Field(default=5, ge=0, le=60)
+    failure_tolerance: float | None = Field(default=None, ge=.0001, le=.5)
+    booking_order: int | None = Field(default=None, ge=0, le=1000000000)
 
     @field_validator("start", "end", mode="before")
     @classmethod
@@ -47,6 +49,8 @@ class ExperimentConfig(BaseModel):
     seed: int = Field(default=20261020, ge=0, le=2**32 - 1)
     objective: Literal["weighted_admission", "revenue"] = "weighted_admission"
     time_limit: float = Field(default=8, ge=.1, le=20)
+    fixed_buffer_minutes: float = Field(default=5, ge=0, le=60)
+    deviation_distribution: Literal['normal', 'uniform'] = 'normal'
 
 
 class ExperimentRequest(BaseModel):

@@ -1,82 +1,94 @@
 # parking-ops-lab
 
-Booking allocation with fixed intervals, uncertain arrival/departure times and a small browser client.
+Batch reservation allocation with uncertain arrival/departure times. Import orders, choose a service-risk budget, assign bays and inspect the admission/risk/fee trade-off in a browser.
+
+The core extension is a bay-assignment MILP that limits each admitted request's union bound on overlap with all other bookings sharing its bay. It compares that allocation with FCFS, nominal intervals, fixed buffers and marginal quantile buffers.
+
+## Run
+
+Python 3.12.
 
 ```bash
 python -m pip install -r requirements.txt
 python -m uvicorn parkinglab.api:app --host 127.0.0.1 --port 8000
 ```
 
-Open <http://127.0.0.1:8000>. Import a CSV or generate sample requests, choose the objective and run the comparison. JSON, schedule CSV and a Markdown report can be downloaded from the result page.
+Open <http://127.0.0.1:8000>. Windows users can run `start.bat`. The browser can generate sample orders, import CSV, set bay count, distribution, fixed-buffer length, service tolerance, objective and solve limit. The distribution panel can overwrite all loaded orders' deviation parameters explicitly; importing heterogeneous CSV does not silently overwrite them.
 
-## Policies
+The result contains an admission decision for every order, its bay, planned buffers, allowed failure probability, model risk upper bound and simulated conflict frequency. Separate tables rank high-risk pairs and diagnose missing inter-booking gaps. Exports include schedule CSV, pair-risk CSV, gap recommendations, a full JSON record and Markdown report.
 
-- **FCFS** sorts by scheduled arrival, breaking ties by input order. This is not actual booking-submission order.
-- **Nominal MILP** selects intervals to maximize either priority-weighted admissions or booking fees under bay-capacity constraints.
-- **Buffered MILP** expands each interval with arrival/departure quantiles, then solves the same selection problem.
-
-The solver is SciPy/HiGHS. Maximum interval occupancy occurs at a start event, so capacity is checked at these events. A heap-based interval coloring assigns selected intervals to identical bays. The solver status and available optimality gap are retained; a time-limited feasible solution is not labelled optimal.
-
-The interval-selection formulation also admits network-flow approaches. This implementation uses MILP as an explicit modelling baseline, not a new solver algorithm.
+![Browser result](docs/dashboard.png)
 
 ## Input
 
 ```csv
-id,start,end,fee,priority,arrival_mean,arrival_std,departure_mean,departure_std
-R001,08:00,09:00,10,4,-2,4,4,5
-R002,09:00,10:00,8,1,-2,4,4,5
+id,start,end,fee,priority,arrival_mean,arrival_std,departure_mean,departure_std,failure_tolerance,booking_order
+R001,08:00,09:00,10,4,-2,4,4,5,0.05,1
+R002,09:20,10:00,8,1,-2,4,4,5,0.10,2
 ```
 
-Only `id,start,end` are required. Times are minutes or `HH:MM`, within one day. Deviations are in minutes. Priority is an input weight from 1 to 10; the separate priority-admission metric uses requests with weight ≥3. Booking fees are not net profit. Limits are 300 requests, 20 bays and 3000 simulation trials.
+Only `id,start,end` are required. Times are minutes or `HH:MM` within one day. Endpoint deviations are in minutes; negative arrival mean means early arrival. Normal and uniform distributions share mean/std parameters; uniform support is mean ± √3 × std. All endpoints are assumed independent.
 
-## Buffer rule
+Priority is a supplied weight, not an inferred user value or a loyalty classifier. A request-specific `failure_tolerance` overrides the default `risk_budget / sqrt(priority)`. `booking_order` supplies FCFS submission order; missing values use input row index, so provide it consistently or leave it blank for all rows. Equal values retain row order. Limits are 300 orders, 20 identical bays, 3000 Monte Carlo trials and 20 solver seconds.
 
-```text
-alpha_i = alpha / sqrt(priority_i)
-z_i = NormalQuantile(1 - alpha_i / 2)
-early_i = max(0, z_i * arrival_std_i - arrival_mean_i)
-late_i  = max(0, departure_mean_i + z_i * departure_std_i)
-window_i = [start_i - early_i, end_i + late_i)
-```
+## Five policies
 
-These are marginal quantile windows. They are a planning heuristic, not a system-wide joint chance-constraint guarantee. A larger buffer consumes capacity and can reduce admissions or revenue.
+| Method | Allocation rule |
+| --- | --- |
+| FCFS | Process booking order, keep the first bay that can fit the nominal interval; no recoloring or displacement of prior assignments |
+| Nominal MILP | Maximize priority-weighted admission or booked fees using scheduled intervals |
+| Fixed-buffer MILP | Reserve the configured minutes before and after every interval |
+| Quantile-buffer MILP | Expand individual intervals using their marginal arrival/departure quantiles |
+| Risk-budget MILP | Assign requests directly to bays, with an all-pairs union-bound budget for each admitted request |
 
-## Simulation
+Fixed buffer is **per endpoint**: a five-minute early buffer and a five-minute late buffer require ten minutes between consecutive nominal intervals. Quantile buffers are a marginal-window heuristic. Risk budgets concern individual requests, not the probability that the entire parking lot is conflict-free. [Model equations, probability derivation and solver limits](docs/model.md) explain these distinctions.
 
-All policies share the same sampled arrival/departure deviations. A request is counted as conflicting when its actual interval overlaps another admitted request on the same bay. Each request is counted once per trial; the denominator is admitted requests. Zero admissions produces `null`, not a zero-risk score.
+## Recorded example
 
-The 95% sampling interval uses a Hoeffding bound across independent trial-level rates. It is conservative and does not cover model error. Request outcomes within a trial are not treated as independent observations.
+48 synthetic requests, four bays, normal deviations, 500 shared Monte Carlo trials, seed 20261020 and weighted-admission objective. These are software-example results, not thesis or field results.
 
-Assumptions include independent normal deviations, identical bays and fixed intervals. Actual departure before arrival is clamped to arrival plus 0.001 minute and counted in the output. There is no queue, online reassignment or downstream loss model. The synthetic examples are separate from any survey or field results.
+| Method | Admitted | Weighted admissions | Booked fees | Simulated conflict involvement |
+| --- | ---: | ---: | ---: | ---: |
+| FCFS | 25/48 | 52 | 195.85 | 51.05% |
+| Nominal intervals | 27/48 | 69 | 205.86 | 66.70% |
+| Fixed buffers | 23/48 | 62 | 177.57 | 9.66% |
+| Quantile buffers | 20/48 | 56 | 156.00 | 0.00% |
+| Per-request risk budget | 23/48 | 59 | 163.73 | 1.29% |
+
+The risk allocation admits three more requests than the marginal-window policy here, with a higher simulated conflict rate. Compared with fixed buffers, it has fewer weighted admissions and lower booked fees, while respecting individual model risk budgets. It does not dominate every baseline. Zero sampled conflicts for quantile buffers is not proof of zero probability.
+
+[Input and full result](examples/risk-allocation-run) include request parameters and a scenario hash. Booked fees are not profit. Expected conflict-free booking fees are an auxiliary diagnostic; refunds, compensation and service recovery are not modeled.
 
 ```bash
-python -m parkinglab --slots 4 --trials 500 --seed 20261020 --output results
-python -m parkinglab --csv examples/default-run/input.csv --output results/imported
-python scripts/sweep.py
+python -m parkinglab --csv examples/risk-allocation-run/input.csv --slots 4 --trials 500 --output results/custom
+python -m parkinglab --replay examples/risk-allocation-run/result.json --output results/replayed
 ```
 
-Inputs, versions, seeds and a scenario hash are saved with the output. The sensitivity script covers three input sizes and three risk settings; its one-off runtime records are not a rigorous speed benchmark.
+JSON replay uses the saved input/config. In a time-limited solve, runtime and the selected tied/partial incumbent can vary by machine, so replay is not a byte-identical schedule guarantee. Seeded Monte Carlo deviations are identical given the same input order, seed and distribution implementation.
 
-## Optional Ollama report
+## Scaling and solution quality
 
-The browser lists models already available through a local Ollama service. Only server-side aggregate metrics and configuration are sent to the model, not the CSV or individual schedules. The endpoint is restricted to loopback HTTP addresses. A deterministic report remains available without a model.
+```bash
+python scripts/benchmark.py
+```
 
-The adapter has HTTP contract tests. Actual Ollama inference has not been exercised in this project; the separate local-research-kit supports direct GGUF experiments. Upstream models keep their own licenses.
+The frozen [protocol](scenarios/scale-protocol.json) evaluates 24, 48, 96 and 192 requests, two deviation distributions and three independent demand seeds: 24 input instances and 120 policy runs. Each uses 300 common-random-number trials. [Raw records](docs/scale-benchmark.json) and [summary CSV](docs/scale-benchmark.csv) retain admissions, conflicts, model size, runtime, optimality gaps and fallback use. The browser displays the recorded experiment separately from the current user's run.
 
-## Tests and deployment
+Smaller risk-assignment cases were solved to optimality in the recorded experiment. The 192-request cases reached the two-second solver limit; their feasible solutions and available upper bounds are kept. Timings include model construction and verification, so total method runtime may exceed the solver limit. Median/IQR values span different input seeds, not repeated identical hardware timing trials. [Interpretation](docs/scaling.md) covers the measured trade-offs.
+
+## Checks
 
 ```bash
 python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-Tests include brute-force objective checks on tiny cases, interval boundaries, independent pairwise conflict checks, reproducibility, CSV validation and API flows.
+Tests compare tiny MILPs with exhaustive bay assignments, check pair probabilities against independent Monte Carlo, verify deterministic endpoint boundaries and uniform convolution, cover repaired invalid durations, and exercise timeout fallback, individual budgets, FCFS order, CSV/API validation and exports. The CI workflow also runs the command-line example on Linux.
 
-The local server retains at most 20 runs in memory. It has no user accounts, durable task queue or production monitoring. A Dockerfile is included but has not been build-tested on the development machine.
+## Scope
 
-```bash
-docker build -t parkingops-lab .
-docker run --rm -p 127.0.0.1:8000:8000 parkingops-lab
-```
+This is an offline decision prototype built from the parking-reservation problem. It is not an exact implementation of the dissertation: it does not reproduce its conflict formula, multi-objective algorithm, loyalty estimation or reported numerical improvements. The current model has identical bays, independent endpoint distributions and fixed booking times. It does not model queues, online rescheduling, correlated disruption, payment settlement or field deployment. Distribution calibration must precede operational use.
 
-References: [SciPy milp](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.milp.html), [Ollama chat](https://docs.ollama.com/api/chat).
+The local server keeps at most 20 runs in memory; exported records are needed for persistence. It has no accounts or production monitoring. Optional local Ollama text explanations receive scalar aggregate metrics only and never determine the allocation. Actual Ollama inference remains unverified; optimization and reports work without it. The older three-policy artifact under `examples/default-run` records the earlier model and should not be compared as a current five-policy run. Docker configuration is included but has not been build-tested here.
+
+References: [SciPy MILP and solver bounds](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.milp.html), [Normal CDF](https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.ndtr.html).

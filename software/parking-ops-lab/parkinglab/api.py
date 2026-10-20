@@ -13,7 +13,7 @@ from .domain import ExperimentRequest, parse_csv, sample_reservations, to_csv
 from .simulation import run_experiment, deterministic_report
 from . import ollama
 
-app = FastAPI(title="ParkingOps Lab", version="0.1.0")
+app = FastAPI(title="ParkingOps Lab", version="0.2.0")
 static = Path(__file__).parent / "static"
 runs = OrderedDict()
 lock = Lock()
@@ -47,6 +47,15 @@ def sample(count: int = Query(48, ge=1, le=300), seed: int = Query(20261020, ge=
 @app.get("/api/sample.csv")
 def sample_csv():
     return Response(to_csv(sample_reservations()), media_type="text/csv", headers={"Content-Disposition":"attachment; filename=reservations.csv"})
+
+
+@app.get('/api/benchmark')
+def benchmark():
+    import json
+    path=Path(__file__).parent.parent/'docs/scale-benchmark.json'
+    if not path.is_file():
+        raise HTTPException(404,'规模实验尚未生成')
+    return json.loads(path.read_text(encoding='utf-8'))
 
 
 class CsvInput(BaseModel):

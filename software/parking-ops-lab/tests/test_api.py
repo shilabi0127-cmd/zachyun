@@ -16,7 +16,10 @@ def test_api_workflow():
     response=client.post('/api/solve',json={'reservations':rows,'config':{'slots':1,'trials':50}})
     assert response.status_code==200
     data=response.json()
-    assert len(data['policies'])==3
+    assert len(data['policies'])==5
+    assert data['policies']['risk_milp']['requests_over_risk_budget']==0
+    assert len(data['input_reservations'])==2
+    assert data['policies']['risk_milp']['risk_constraint_verified']
     report=client.post('/api/report',json={'run_id':data['run_id']})
     assert report.status_code==200 and data['scenario_hash'] in report.json()['report']
     assert client.post('/api/report',json={'run_id':'missing'}).status_code==404
@@ -27,6 +30,16 @@ def test_api_validation_and_origin():
     assert client.post('/api/solve',json={'reservations':[]}).status_code==422
     assert client.post('/api/import',json={'csv_text':'bad'},headers={'Origin':'https://example.org'}).status_code==403
     assert client.get('/static/app.js').headers['x-content-type-options']=='nosniff'
+
+
+def test_uniform_distribution_and_individual_service_target():
+    rows=[{'id':'a','start':480,'end':510,'failure_tolerance':.02},
+          {'id':'b','start':530,'end':560,'failure_tolerance':.04}]
+    response=client.post('/api/solve',json={'reservations':rows,'config':{'slots':1,'trials':50,'deviation_distribution':'uniform'}})
+    assert response.status_code==200
+    policy=response.json()['policies']['risk_milp']
+    assert policy['requests_over_risk_budget']==0
+    assert policy['buffer_recommendations']
 
 
 @pytest.mark.parametrize('url',['https://example.com','http://192.168.1.2:11434','http://127.0.0.1:11434/path','http://user@localhost:11434'])
@@ -50,10 +63,12 @@ def test_ollama_contract(monkeypatch):
     monkeypatch.setenv('PARKINGLAB_OLLAMA_URL',f'http://127.0.0.1:{server.server_port}')
     try:
         assert ollama.models()['models']==['local-test']
-        assert ollama.explain({'config':{},'policies':{'fcfs':{'accepted':1,'schedule':[{'secret':'raw'}]}}},'local-test')=='test explanation'
+        assert ollama.explain({'config':{},'policies':{'fcfs':{'accepted':1,'schedule':[{'secret':'raw'}],
+            'risk_pairs':[{'private_pair_id':'secret'}],'buffer_recommendations':[{'private_order':'secret'}]}}},'local-test')=='test explanation'
         assert captured['stream'] is False
         assert 'schedule' not in captured['messages'][1]['content']
         assert 'secret' not in captured['messages'][1]['content']
+        assert 'private_pair_id' not in captured['messages'][1]['content']
     finally:
         server.shutdown();server.server_close();thread.join()
 

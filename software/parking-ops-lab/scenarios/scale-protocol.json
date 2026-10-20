@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "sizes": [24, 48, 96, 192],
+  "seeds": [310001, 310002, 310003],
+  "distributions": ["normal", "uniform"],
+  "objective": "weighted_admission",
+  "requests_per_bay": 16,
+  "risk_budget": 0.1,
+  "fixed_buffer_minutes": 5,
+  "trials": 300,
+  "solver_time_limit_seconds": 2,
+  "scope": "Synthetic batch instances. Medians span different demand seeds, not repeated identical timing trials. Solve limits exclude model construction and independent audits."
+}

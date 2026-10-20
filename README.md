@@ -1,29 +1,27 @@
-# control & inference
+# allocation & control
 
-Traffic control with a queue prototype and a SUMO backend. Python 3.12.
+Reservation allocation, traffic control and local inference tools. Python 3.12.
 
-## junction-agents
+## parking-ops-lab
 
-[Source](software/junction-agents) · [SUMO experiment](software/junction-agents/docs/sumo.md) · [Protocol](software/junction-agents/scenarios/sumo-protocol.json) · [Recorded results](software/junction-agents/examples/sumo-summary.csv)
+[Source](software/parking-ops-lab) · [Model](software/parking-ops-lab/docs/model.md) · [Recorded example](software/parking-ops-lab/examples/risk-allocation-run) · [中文使用说明](software/parking-ops-lab/docs/使用说明.md)
 
-Four signal agents control a 2×2 network through TraCI. Fixed-time and native SUMO actuated control are compared with a pressure heuristic, constrained joint rollout, CEM and zero-shot transfer of a queue-trained Q table.
+An offline parking-reservation decision tool. Import orders, specify arrival/departure uncertainty and individual service-risk limits, then inspect accepted/rejected bookings, bay assignments, risky pairs and inter-booking gaps in a browser.
+
+- The bay-assignment MILP enforces a per-request union bound over all coassigned pairs. Its probability model includes an allowance for repaired invalid durations.
+- FCFS, nominal intervals, fixed buffers and quantile buffers provide explicit baselines. Every policy uses the same Monte Carlo realizations for comparison.
+- A recorded scale experiment covers 24–192 orders, two distributions and three seeds. Timed-out solutions keep their actual status, bound and fallback source.
 
 ```bash
-cd software/junction-agents
-python -m pip install -r requirements-sumo.txt
-python -m junction_agents.sumo_benchmark
+cd software/parking-ops-lab
+python -m pip install -r requirements.txt
+python -m uvicorn parkinglab.api:app --host 127.0.0.1 --port 8000
 ```
 
-The recorded experiment contains 90 simulator runs across three demand/geometry cases and five held-out seeds. Inputs are shared between policies. Actual signal states are checked for green-time bounds, yellow and all-red clearance; vehicle accounting includes trips still running or waiting to enter.
+## Supporting projects
 
-Native actuated control performs best in these SUMO cases. The queue-model gains do not transfer directly. The implementation keeps this result, its input hashes and per-seed records rather than presenting the prototype as a deployment result.
-
-The [queue experiment](software/junction-agents/docs/queue-model.md) isolates action masking and the learned-value ablation. The [CEM notes](software/junction-agents/docs/cem.md) compare search cost and control outcomes. [Integration tests](software/junction-agents/tests/test_sumo_integration.py) launch the actual simulator in CI.
-
-## Supporting tools
-
-- [local-research-kit](software/local-research-kit) provides SQLite retrieval, bounded context selection, local GGUF/Ollama inference and quote checks. An [actual CPU GGUF run](software/local-research-kit/docs/generation-notes.md) is recorded; model weights stay outside the repository.
-- [parking-ops-lab](software/parking-ops-lab) compares interval MILP allocation with common Monte Carlo samples and a browser schedule.
+- [junction-agents](software/junction-agents) connects constrained signal controllers to SUMO/TraCI. Its [90-run experiment](software/junction-agents/docs/sumo.md) retains the stronger native actuated baseline and the queue-to-microsimulation transfer failure.
+- [local-research-kit](software/local-research-kit) implements SQLite retrieval, bounded context, local GGUF/Ollama inference and quote checks, with a recorded CPU GGUF run.
 - [choice-model-lab](software/choice-model-lab) implements conditional logit with grouped holdout and cluster-robust uncertainty.
 
-Traffic inputs are synthetic. Each implementation documents its assumptions and reproduction commands.
+Bundled traffic inputs are synthetic. These implementations document their assumptions and do not claim field deployment or reproduce dissertation performance numbers.

@@ -7,16 +7,18 @@ from statistics import NormalDist
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, milp
 from scipy.sparse import csc_array
+from .risk import tolerance, marginal_quantile
 
 
-def protected_windows(reservations, risk_budget=.1, buffered=False):
+def protected_windows(reservations, risk_budget=.1, buffered=False, distribution='normal', fixed_buffer=None):
     result = []
     for r in reservations:
-        if buffered:
-            alpha = risk_budget / math.sqrt(r.priority)
-            z = NormalDist().inv_cdf(1 - alpha / 2)
-            early = max(0., z * r.arrival_std - r.arrival_mean)
-            late = max(0., r.departure_mean + z * r.departure_std)
+        if fixed_buffer is not None:
+            early = late = fixed_buffer
+        elif buffered:
+            alpha = tolerance(r,risk_budget)
+            early = max(0., -marginal_quantile(r.arrival_mean,r.arrival_std,alpha/2,distribution))
+            late = max(0., marginal_quantile(r.departure_mean,r.departure_std,1-alpha/2,distribution))
         else:
             early = late = 0.
         result.append((r.start - early, r.end + late))
@@ -45,22 +47,25 @@ def color_intervals(selected, windows, slots):
 def greedy(reservations, slots):
     started = time.perf_counter()
     windows = protected_windows(reservations)
-    occupied, selected = [], []
-    for i in sorted(range(len(reservations)), key=lambda i: (windows[i][0], i)):
-        while occupied and occupied[0] <= windows[i][0]:
-            heapq.heappop(occupied)
-        if len(occupied) < slots:
-            selected.append(i)
-            heapq.heappush(occupied, windows[i][1])
-    return {"selected": selected, "assignments": color_intervals(selected, windows, slots),
+    assignments = {}
+    # Missing booking_order uses CSV row order. Do not confuse booking with arrival order.
+    for i in sorted(range(len(reservations)),key=lambda i:(
+            reservations[i].booking_order if reservations[i].booking_order is not None else i,i)):
+        start,end=windows[i]
+        for bay in range(1,slots+1):
+            if all(assignments[j]!=bay or end<=windows[j][0] or windows[j][1]<=start for j in assignments):
+                assignments[i]=bay
+                break
+    return {"selected": sorted(assignments), "assignments": assignments,
             "windows": windows, "status": "heuristic", "optimal": False,
             "gap": None, "runtime_ms": (time.perf_counter()-started)*1000}
 
 
-def optimize(reservations, config, buffered=False):
+def optimize(reservations, config, buffered=False, fixed_buffer=None):
     started = time.perf_counter()
     n = len(reservations)
-    windows = protected_windows(reservations, config.risk_budget, buffered)
+    windows = protected_windows(reservations, config.risk_budget, buffered,
+                                config.deviation_distribution,fixed_buffer)
     starts, ends = np.asarray(windows, dtype=float).T
     times = np.unique(starts)
     # Every maximum occupancy occurs at a start event. Ends are excluded.

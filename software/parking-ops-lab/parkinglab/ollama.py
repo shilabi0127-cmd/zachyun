@@ -29,8 +29,9 @@ def models():
 
 
 def explain(result, model):
-    aggregates = {k:{a:b for a,b in v.items() if a != "schedule"} for k,v in result["policies"].items()}
+    aggregates = {k:{a:b for a,b in v.items() if isinstance(b,(str,int,float,bool,type(None)))}
+                  for k,v in result["policies"].items()}
     response = request("/api/chat", {"model":model, "stream":False, "options":{"temperature":0}, "messages":[
-        {"role":"system", "content":"你是泊位规划实验的说明助手。只依据给出的计算结果，用中文解释接纳与风险的取舍。不得声称真实上线、论文复现、因果效果或联合概率保证。不能补造数字。说明抽样误差与正态偏差假设。控制在500字。"},
+        {"role":"system", "content":"你是泊位规划实验的说明助手。只依据给出的计算结果，用中文解释接纳与风险的取舍。不得声称真实上线、论文复现、因果效果或联合概率保证。不能补造数字。说明抽样误差与输入分布假设。控制在500字。"},
         {"role":"user", "content":json.dumps({"config":result["config"], "metrics":aggregates}, ensure_ascii=False)}]}, timeout=120)
     return response["message"]["content"]

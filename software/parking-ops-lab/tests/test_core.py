@@ -78,7 +78,8 @@ def test_deterministic_feasible_schedule_no_conflicts():
     rows=[row('a',0,30,arrival_mean=0,arrival_std=0,departure_mean=0,departure_std=0),row('b',30,60,arrival_mean=0,arrival_std=0,departure_mean=0,departure_std=0)]
     result=run_experiment(ExperimentRequest(reservations=rows,config=ExperimentConfig(slots=1,trials=50)))
     assert all(p['conflict_rate']==0 for p in result['policies'].values())
-    assert all(p['accepted']==2 for p in result['policies'].values())
+    assert all(p['accepted']==2 for key,p in result['policies'].items() if key!='fixed_buffer_milp')
+    assert result['policies']['fixed_buffer_milp']['accepted']==1
 
 
 def test_reproducible_seed():
