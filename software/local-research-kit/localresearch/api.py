@@ -4,9 +4,10 @@ from threading import Lock
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from .index import Index
 from .generation import answer
+from .pipeline import run, ContextPolicy
 
 ROOT=Path(__file__).resolve().parents[1]
 NOTES=Path(os.environ.get('LOCAL_RESEARCH_NOTES',str(ROOT/'notes')))
@@ -33,6 +34,13 @@ class Question(BaseModel):
     k:int=Field(default=4,ge=1,le=10)
     backend:str=Field(default='extractive',pattern='^(extractive|ollama|gguf)$')
     model:str=Field(default='',max_length=100,pattern=r'^[A-Za-z0-9_.:/-]*$')
+    context_chars:int=Field(default=2600,ge=128,le=8000)
+
+    @field_validator('question')
+    @classmethod
+    def not_blank(cls,value):
+        if not value.strip():raise ValueError('Question cannot be blank')
+        return value
 
 
 class Document(BaseModel):
@@ -47,7 +55,7 @@ def status():
 
 @app.post('/api/ask')
 def ask(body:Question):
-    return answer(INDEX,body.question,body.k,body.backend,body.model)
+    return run(INDEX,body.question,body.k,body.backend,body.model,ContextPolicy(max_chars=body.context_chars))
 
 
 @app.post('/api/documents')

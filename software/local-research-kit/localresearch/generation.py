@@ -65,6 +65,10 @@ def validated_items(response,hits):
 def answer(index,question,k=4,backend='extractive',model=''):
     if not isinstance(question,str) or not 1<=len(question.strip())<=1000:raise ValueError('Question must contain 1..1000 characters')
     hits=index.search(question,k)
+    return answer_from_hits(question,hits,backend,model)
+
+
+def answer_from_hits(question,hits,backend='extractive',model=''):
     result={'question':question,'hits':hits,'backend_requested':backend,'backend_used':'extractive','items':[],
             'refused':not bool(hits),'generated':False,'rejected_items':0,
             'verification':'Exact source IDs and quotes only; semantic entailment is not automatically verified.'}

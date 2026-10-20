@@ -1,9 +1,9 @@
 name: Python tools
 on:
   push:
-    paths: ['software/local-research-kit/**', 'software/choice-model-lab/**', '.github/workflows/python-tools.yml']
+    paths: ['software/local-research-kit/**', 'software/choice-model-lab/**', 'software/junction-agents/**', '.github/workflows/python-tools.yml']
   pull_request:
-    paths: ['software/local-research-kit/**', 'software/choice-model-lab/**', '.github/workflows/python-tools.yml']
+    paths: ['software/local-research-kit/**', 'software/choice-model-lab/**', 'software/junction-agents/**', '.github/workflows/python-tools.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [local-research-kit, choice-model-lab]
+        project: [local-research-kit, choice-model-lab, junction-agents]
     defaults:
       run:
         working-directory: software/${{ matrix.project }}

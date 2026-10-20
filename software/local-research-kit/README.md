@@ -21,6 +21,19 @@ Index updates run in a transaction. Unchanged file hashes are skipped; changed a
 
 A small lexical-coverage filter suppresses some weak matches. Its score is not calibrated confidence, and unrelated questions sharing vocabulary can still return matches.
 
+`pipeline.py` selects complete chunks within a configurable character budget, removes duplicate IDs and limits each document's share of the context. This is a text-size budget, not exact model-token accounting. Oversized chunks are skipped rather than silently changing their source lines.
+
+## Run records
+
+```bash
+python -m localresearch ask "共同随机数有什么作用" --record .local/run.json
+python -m localresearch replay .local/run.json
+```
+
+Records contain the selected source text, configuration, prompt version, input hash and stage timings. Replay uses the saved context, independently of the current index. It defaults to excerpt mode; pass an explicit backend to regenerate with a model. The hash detects accidental input edits, not authenticated tampering. Changing a model or its version may change generated output.
+
+Saving a record also saves its question and source excerpts. Keep private records out of a public repository. The API returns trace data but does not automatically persist it. A small example is in `docs/trace-demo.json`.
+
 ## Local generation
 
 Two optional backends use the same source-checking pipeline.
@@ -73,6 +86,7 @@ An actual CPU run with Qwen3-0.6B-Q8_0 is recorded in [`docs/generation-notes.md
 ```text
 localresearch/index.py        SQLite ingestion and search
 localresearch/generation.py   model adapters and quote validation
+localresearch/pipeline.py     bounded context selection and replay
 localresearch/evaluation.py   retrieval smoke checks
 localresearch/benchmark.py    local generation records
 localresearch/api.py          local HTTP interface

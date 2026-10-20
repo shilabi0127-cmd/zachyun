@@ -14,3 +14,4 @@ def test_api_upload_ask(tmp_path,monkeypatch):
     assert data['hits'][0]['path']=='note.md'
     assert client.post('/api/documents',json={'name':'../escape.md','content':'bad'}).status_code==422
     assert client.post('/api/ask',json={'question':'abc'},headers={'Origin':'https://example.com'}).status_code==403
+    assert client.post('/api/ask',json={'question':'   '}).status_code==422

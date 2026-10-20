@@ -1,0 +1,73 @@
+{
+  "question": "共同随机数有什么作用",
+  "hits": [
+    {
+      "id": "63748fa5999c01c1",
+      "path": "experiment-design.md",
+      "heading": "策略对照实验",
+      "start_line": 1,
+      "end_line": 4,
+      "text": "# 策略对照实验\n\n共同随机数是指用同一组随机到离场样本评估不同分配策略，减少独立采样造成的比较噪声。它不能消除模型设定错误，也不证明真实业务的因果效果。\n",
+      "query_coverage": 0.4444444444444444,
+      "score": 8.257984822075375
+    }
+  ],
+  "backend_requested": "extractive",
+  "backend_used": "extractive",
+  "items": [
+    {
+      "statement": "策略对照实验",
+      "quote": "# 策略对照实验\n\n共同随机数是指用同一组随机到离场样本评估不同分配策略，减少独立采样造成的比较噪声。它不能消除模型设定错误，也不证明真实业务的因果效果。\n",
+      "source_id": "63748fa5999c01c1",
+      "path": "experiment-design.md",
+      "start_line": 1,
+      "end_line": 4
+    }
+  ],
+  "refused": false,
+  "generated": false,
+  "rejected_items": 0,
+  "verification": "Exact source IDs and quotes only; semantic entailment is not automatically verified.",
+  "trace": {
+    "version": 1,
+    "input_sha256": "34928085a898fbf313308934f420d76fe447a0b1cccd20fbae721def01ff3cb1",
+    "inputs": {
+      "question": "共同随机数有什么作用",
+      "k": 4,
+      "backend": "extractive",
+      "model": "",
+      "policy": {
+        "max_chars": 2600,
+        "max_per_document": 2
+      },
+      "hits": [
+        {
+          "id": "63748fa5999c01c1",
+          "path": "experiment-design.md",
+          "heading": "策略对照实验",
+          "start_line": 1,
+          "end_line": 4,
+          "text": "# 策略对照实验\n\n共同随机数是指用同一组随机到离场样本评估不同分配策略，减少独立采样造成的比较噪声。它不能消除模型设定错误，也不证明真实业务的因果效果。\n",
+          "query_coverage": 0.4444444444444444,
+          "score": 8.257984822075375
+        }
+      ],
+      "prompt_version": "evidence-v2"
+    },
+    "candidate_ids": [
+      "63748fa5999c01c1"
+    ],
+    "context_chars": 78,
+    "skipped": {
+      "duplicate": 0,
+      "document_limit": 0,
+      "budget": 0,
+      "result_limit": 0
+    },
+    "timing_ms": {
+      "retrieval": 1.433,
+      "selection_and_answer": 0.018,
+      "total": 1.451
+    }
+  }
+}
