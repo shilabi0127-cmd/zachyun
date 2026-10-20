@@ -2,6 +2,16 @@
 
 <p align="center"><a href="research/README.md">研究总览</a> · <a href="examples/README.md">运行方法演示</a> · <a href="research/publications.md">代表成果</a> · <a href="index.html">交通信息工程网页源码</a></p>
 
+## 可运行的软件 · ParkingOps Lab
+
+[打开软件源码与使用说明](software/parking-ops-lab/README.md) · [界面预览](software/parking-ops-lab/docs/dashboard.png) · [完整实验输出](software/parking-ops-lab/examples/default-run/result.json)
+
+预约泊位优化实验台，支持 CSV 导入、SciPy/HiGHS 整数规划、三策略对比、随机到离场仿真、SVG 泊位排程和报告导出。可选连接 Ollama，让本地模型解释服务端算出的汇总指标。
+
+这是新建的软件作品，示例使用合成数据，不是论文原始代码或线上运营系统。本机 27 项测试通过；真实模型推理尚未验证，标准求解与报告不依赖模型。
+
+<a href="software/parking-ops-lab/README.md"><img src="software/parking-ops-lab/docs/dashboard.png" alt="ParkingOps Lab 运行界面" width="900"></a>
+
 ## 从用户选择，到服务策略与资源分配
 
 我是张云翔，吉林大学交通信息工程及控制博士，现居成都。研究交通出行中的行为差异、长期策略效果与有限资源分配，使用 R、Python、AnyLogic 和 VISSIM 将模型转成可计算、可比较的实验。
@@ -47,6 +57,7 @@ python -m unittest discover -s examples/tests -v
 ## 仓库导航
 
 ```text
+software/       可运行的预约泊位优化实验台
 research/       研究问题、方法、指标口径与代表成果
 examples/       本次新增的小规模方法演示及测试
 assets/         研究总览和演示结果图

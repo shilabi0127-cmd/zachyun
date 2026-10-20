@@ -1,0 +1,650 @@
+{
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "note": "Single local run; not a rigorous speed benchmark or real-world traffic evidence.",
+  "runs": [
+    {
+      "count": 48,
+      "risk_budget": 0.05,
+      "scenario_hash": "a6c44fb7d2f4023da8a1c7306ef1039c888e70e8afba9b363e0e21666fc298fb",
+      "runtime_ms": 13.98,
+      "policies": {
+        "fcfs": {
+          "accepted": 27,
+          "total": 48,
+          "acceptance_rate": 0.5625,
+          "accepted_weight": 54.0,
+          "revenue": 223.57,
+          "priority_accepted": 9,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.5,
+          "conflict_rate": 0.7610370370370371,
+          "mc_95_bound": [
+            0.7003008908462065,
+            0.8217731832278676
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.788659793814433,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.049
+        },
+        "nominal_milp": {
+          "accepted": 27,
+          "total": 48,
+          "acceptance_rate": 0.5625,
+          "accepted_weight": 69.0,
+          "revenue": 205.86,
+          "priority_accepted": 14,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.7777777777777778,
+          "conflict_rate": 0.666962962962963,
+          "mc_95_bound": [
+            0.6062268167721324,
+            0.7276991091537935
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.7654639175257731,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 6.012
+        },
+        "buffered_milp": {
+          "accepted": 20,
+          "total": 48,
+          "acceptance_rate": 0.4166666666666667,
+          "accepted_weight": 56.0,
+          "revenue": 160.03,
+          "priority_accepted": 12,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.6666666666666666,
+          "conflict_rate": 0.0,
+          "mc_95_bound": [
+            0.0,
+            0.060736146190830516
+          ],
+          "any_conflict_trial_rate": 0.0,
+          "nominal_utilization": 0.5489690721649485,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 4.652
+        }
+      }
+    },
+    {
+      "count": 48,
+      "risk_budget": 0.1,
+      "scenario_hash": "8877640ef3517375fa19d085551e6ef812730941c7ef61a59094291de5d1586b",
+      "runtime_ms": 10.09,
+      "policies": {
+        "fcfs": {
+          "accepted": 27,
+          "total": 48,
+          "acceptance_rate": 0.5625,
+          "accepted_weight": 54.0,
+          "revenue": 223.57,
+          "priority_accepted": 9,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.5,
+          "conflict_rate": 0.7610370370370371,
+          "mc_95_bound": [
+            0.7003008908462065,
+            0.8217731832278676
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.788659793814433,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.036
+        },
+        "nominal_milp": {
+          "accepted": 27,
+          "total": 48,
+          "acceptance_rate": 0.5625,
+          "accepted_weight": 69.0,
+          "revenue": 205.86,
+          "priority_accepted": 14,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.7777777777777778,
+          "conflict_rate": 0.666962962962963,
+          "mc_95_bound": [
+            0.6062268167721324,
+            0.7276991091537935
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.7654639175257731,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 3.692
+        },
+        "buffered_milp": {
+          "accepted": 20,
+          "total": 48,
+          "acceptance_rate": 0.4166666666666667,
+          "accepted_weight": 56.0,
+          "revenue": 156.0,
+          "priority_accepted": 12,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.6666666666666666,
+          "conflict_rate": 0.0,
+          "mc_95_bound": [
+            0.0,
+            0.060736146190830516
+          ],
+          "any_conflict_trial_rate": 0.0,
+          "nominal_utilization": 0.5412371134020618,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 3.544
+        }
+      }
+    },
+    {
+      "count": 48,
+      "risk_budget": 0.2,
+      "scenario_hash": "50a34a93c2a423d648f75931c9227aaf5ac871d240099e62c965b60edc5dc540",
+      "runtime_ms": 11.61,
+      "policies": {
+        "fcfs": {
+          "accepted": 27,
+          "total": 48,
+          "acceptance_rate": 0.5625,
+          "accepted_weight": 54.0,
+          "revenue": 223.57,
+          "priority_accepted": 9,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.5,
+          "conflict_rate": 0.7610370370370371,
+          "mc_95_bound": [
+            0.7003008908462065,
+            0.8217731832278676
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.788659793814433,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.034
+        },
+        "nominal_milp": {
+          "accepted": 27,
+          "total": 48,
+          "acceptance_rate": 0.5625,
+          "accepted_weight": 69.0,
+          "revenue": 205.86,
+          "priority_accepted": 14,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.7777777777777778,
+          "conflict_rate": 0.666962962962963,
+          "mc_95_bound": [
+            0.6062268167721324,
+            0.7276991091537935
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.7654639175257731,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 4.469
+        },
+        "buffered_milp": {
+          "accepted": 21,
+          "total": 48,
+          "acceptance_rate": 0.4375,
+          "accepted_weight": 57.0,
+          "revenue": 162.92,
+          "priority_accepted": 12,
+          "priority_total": 18,
+          "priority_acceptance_rate": 0.6666666666666666,
+          "conflict_rate": 0.006857142857142857,
+          "mc_95_bound": [
+            0.0,
+            0.06759328904797338
+          ],
+          "any_conflict_trial_rate": 0.068,
+          "nominal_utilization": 0.5721649484536082,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 4.368
+        }
+      }
+    },
+    {
+      "count": 100,
+      "risk_budget": 0.05,
+      "scenario_hash": "7b0b6c36796e6123d8a5bc2d6b6cce9bce242d1fd75f06e9d89c12f12c3cd5cd",
+      "runtime_ms": 16.29,
+      "policies": {
+        "fcfs": {
+          "accepted": 31,
+          "total": 100,
+          "acceptance_rate": 0.31,
+          "accepted_weight": 55.0,
+          "revenue": 235.38,
+          "priority_accepted": 8,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.27586206896551724,
+          "conflict_rate": 0.8560645161290322,
+          "mc_95_bound": [
+            0.7953283699382017,
+            0.9168006623198628
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8175,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.057
+        },
+        "nominal_milp": {
+          "accepted": 33,
+          "total": 100,
+          "acceptance_rate": 0.33,
+          "accepted_weight": 93.0,
+          "revenue": 239.56,
+          "priority_accepted": 20,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.6896551724137931,
+          "conflict_rate": 0.7588484848484849,
+          "mc_95_bound": [
+            0.6981123386576543,
+            0.8195846310393154
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.825,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 5.199
+        },
+        "buffered_milp": {
+          "accepted": 20,
+          "total": 100,
+          "acceptance_rate": 0.2,
+          "accepted_weight": 74.0,
+          "revenue": 158.28,
+          "priority_accepted": 18,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.6206896551724138,
+          "conflict_rate": 0.0,
+          "mc_95_bound": [
+            0.0,
+            0.060736146190830516
+          ],
+          "any_conflict_trial_rate": 0.0,
+          "nominal_utilization": 0.555,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 6.673
+        }
+      }
+    },
+    {
+      "count": 100,
+      "risk_budget": 0.1,
+      "scenario_hash": "ad76c9af926b7f10e8755ca00786945db4f8101b3781262e3a85d4c2461687f4",
+      "runtime_ms": 15.94,
+      "policies": {
+        "fcfs": {
+          "accepted": 31,
+          "total": 100,
+          "acceptance_rate": 0.31,
+          "accepted_weight": 55.0,
+          "revenue": 235.38,
+          "priority_accepted": 8,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.27586206896551724,
+          "conflict_rate": 0.8560645161290322,
+          "mc_95_bound": [
+            0.7953283699382017,
+            0.9168006623198628
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8175,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.054
+        },
+        "nominal_milp": {
+          "accepted": 33,
+          "total": 100,
+          "acceptance_rate": 0.33,
+          "accepted_weight": 93.0,
+          "revenue": 239.56,
+          "priority_accepted": 20,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.6896551724137931,
+          "conflict_rate": 0.7588484848484849,
+          "mc_95_bound": [
+            0.6981123386576543,
+            0.8195846310393154
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.825,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 4.86
+        },
+        "buffered_milp": {
+          "accepted": 21,
+          "total": 100,
+          "acceptance_rate": 0.21,
+          "accepted_weight": 75.0,
+          "revenue": 165.55,
+          "priority_accepted": 18,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.6206896551724138,
+          "conflict_rate": 0.0003809523809523809,
+          "mc_95_bound": [
+            0.0,
+            0.061117098571782894
+          ],
+          "any_conflict_trial_rate": 0.004,
+          "nominal_utilization": 0.5625,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 6.629
+        }
+      }
+    },
+    {
+      "count": 100,
+      "risk_budget": 0.2,
+      "scenario_hash": "02ac74b8674dbec83ce2472035867e3841e26b51b7d51a4658c15f88d17a82a0",
+      "runtime_ms": 15.68,
+      "policies": {
+        "fcfs": {
+          "accepted": 31,
+          "total": 100,
+          "acceptance_rate": 0.31,
+          "accepted_weight": 55.0,
+          "revenue": 235.38,
+          "priority_accepted": 8,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.27586206896551724,
+          "conflict_rate": 0.8560645161290322,
+          "mc_95_bound": [
+            0.7953283699382017,
+            0.9168006623198628
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8175,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.054
+        },
+        "nominal_milp": {
+          "accepted": 33,
+          "total": 100,
+          "acceptance_rate": 0.33,
+          "accepted_weight": 93.0,
+          "revenue": 239.56,
+          "priority_accepted": 20,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.6896551724137931,
+          "conflict_rate": 0.7588484848484849,
+          "mc_95_bound": [
+            0.6981123386576543,
+            0.8195846310393154
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.825,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 4.854
+        },
+        "buffered_milp": {
+          "accepted": 22,
+          "total": 100,
+          "acceptance_rate": 0.22,
+          "accepted_weight": 76.0,
+          "revenue": 169.36,
+          "priority_accepted": 18,
+          "priority_total": 29,
+          "priority_acceptance_rate": 0.6206896551724138,
+          "conflict_rate": 0.0032727272727272726,
+          "mc_95_bound": [
+            0.0,
+            0.06400887346355778
+          ],
+          "any_conflict_trial_rate": 0.036,
+          "nominal_utilization": 0.5775,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 6.501
+        }
+      }
+    },
+    {
+      "count": 300,
+      "risk_budget": 0.05,
+      "scenario_hash": "e90e8e85ae66ce090f4641f4b6f34856c0fdc2bdf027abb425558eb1b5e930be",
+      "runtime_ms": 47.72,
+      "policies": {
+        "fcfs": {
+          "accepted": 28,
+          "total": 300,
+          "acceptance_rate": 0.09333333333333334,
+          "accepted_weight": 55.0,
+          "revenue": 250.67,
+          "priority_accepted": 9,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.09574468085106383,
+          "conflict_rate": 0.9075,
+          "mc_95_bound": [
+            0.8467638538091694,
+            0.9682361461908305
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8382352941176471,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.159
+        },
+        "nominal_milp": {
+          "accepted": 43,
+          "total": 300,
+          "acceptance_rate": 0.14333333333333334,
+          "accepted_weight": 142.0,
+          "revenue": 248.09,
+          "priority_accepted": 33,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.35106382978723405,
+          "conflict_rate": 0.7928372093023254,
+          "mc_95_bound": [
+            0.7321010631114948,
+            0.8535733554931559
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8014705882352942,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 13.592
+        },
+        "buffered_milp": {
+          "accepted": 26,
+          "total": 300,
+          "acceptance_rate": 0.08666666666666667,
+          "accepted_weight": 92.0,
+          "revenue": 157.55,
+          "priority_accepted": 22,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.23404255319148937,
+          "conflict_rate": 0.00015384615384615385,
+          "mc_95_bound": [
+            0.0,
+            0.06088999234467667
+          ],
+          "any_conflict_trial_rate": 0.002,
+          "nominal_utilization": 0.5073529411764706,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 23.178
+        }
+      }
+    },
+    {
+      "count": 300,
+      "risk_budget": 0.1,
+      "scenario_hash": "47e002d3ca79803ce1d12ad75dbe94c69291d505d9bbcd5a463df7d8d8267735",
+      "runtime_ms": 48.47,
+      "policies": {
+        "fcfs": {
+          "accepted": 28,
+          "total": 300,
+          "acceptance_rate": 0.09333333333333334,
+          "accepted_weight": 55.0,
+          "revenue": 250.67,
+          "priority_accepted": 9,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.09574468085106383,
+          "conflict_rate": 0.9075,
+          "mc_95_bound": [
+            0.8467638538091694,
+            0.9682361461908305
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8382352941176471,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.148
+        },
+        "nominal_milp": {
+          "accepted": 43,
+          "total": 300,
+          "acceptance_rate": 0.14333333333333334,
+          "accepted_weight": 142.0,
+          "revenue": 248.09,
+          "priority_accepted": 33,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.35106382978723405,
+          "conflict_rate": 0.7928372093023254,
+          "mc_95_bound": [
+            0.7321010631114948,
+            0.8535733554931559
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8014705882352942,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 13.55
+        },
+        "buffered_milp": {
+          "accepted": 27,
+          "total": 300,
+          "acceptance_rate": 0.09,
+          "accepted_weight": 93.0,
+          "revenue": 175.85,
+          "priority_accepted": 22,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.23404255319148937,
+          "conflict_rate": 0.0017777777777777776,
+          "mc_95_bound": [
+            0.0,
+            0.06251392396860829
+          ],
+          "any_conflict_trial_rate": 0.024,
+          "nominal_utilization": 0.5588235294117647,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 24.145
+        }
+      }
+    },
+    {
+      "count": 300,
+      "risk_budget": 0.2,
+      "scenario_hash": "8e0148fc930eabe9ae3d748edebe2304b53db72d78384f8122cf6eb4fbb7e82d",
+      "runtime_ms": 46.78,
+      "policies": {
+        "fcfs": {
+          "accepted": 28,
+          "total": 300,
+          "acceptance_rate": 0.09333333333333334,
+          "accepted_weight": 55.0,
+          "revenue": 250.67,
+          "priority_accepted": 9,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.09574468085106383,
+          "conflict_rate": 0.9075,
+          "mc_95_bound": [
+            0.8467638538091694,
+            0.9682361461908305
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8382352941176471,
+          "solver_status": "heuristic",
+          "optimal": false,
+          "mip_gap": null,
+          "solver_runtime_ms": 0.14
+        },
+        "nominal_milp": {
+          "accepted": 43,
+          "total": 300,
+          "acceptance_rate": 0.14333333333333334,
+          "accepted_weight": 142.0,
+          "revenue": 248.09,
+          "priority_accepted": 33,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.35106382978723405,
+          "conflict_rate": 0.7928372093023254,
+          "mc_95_bound": [
+            0.7321010631114948,
+            0.8535733554931559
+          ],
+          "any_conflict_trial_rate": 1.0,
+          "nominal_utilization": 0.8014705882352942,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 13.496
+        },
+        "buffered_milp": {
+          "accepted": 29,
+          "total": 300,
+          "acceptance_rate": 0.09666666666666666,
+          "accepted_weight": 95.0,
+          "revenue": 166.21,
+          "priority_accepted": 22,
+          "priority_total": 94,
+          "priority_acceptance_rate": 0.23404255319148937,
+          "conflict_rate": 0.0074482758620689656,
+          "mc_95_bound": [
+            0.0,
+            0.06818442205289948
+          ],
+          "any_conflict_trial_rate": 0.098,
+          "nominal_utilization": 0.5294117647058824,
+          "solver_status": "optimal",
+          "optimal": true,
+          "mip_gap": 0.0,
+          "solver_runtime_ms": 21.708
+        }
+      }
+    }
+  ]
+}
