@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<connections>
+  <connection from="n0__j00" to="j00__j10" fromLane="0" toLane="0" tl="j00" linkIndex="0" />
+  <connection from="j01__j00" to="j00__w0" fromLane="0" toLane="0" tl="j00" linkIndex="1" />
+  <connection from="j10__j00" to="j00__n0" fromLane="0" toLane="0" tl="j00" linkIndex="2" />
+  <connection from="w0__j00" to="j00__j01" fromLane="0" toLane="0" tl="j00" linkIndex="3" />
+  <connection from="n1__j01" to="j01__j11" fromLane="0" toLane="0" tl="j01" linkIndex="0" />
+  <connection from="e0__j01" to="j01__j00" fromLane="0" toLane="0" tl="j01" linkIndex="1" />
+  <connection from="j11__j01" to="j01__n1" fromLane="0" toLane="0" tl="j01" linkIndex="2" />
+  <connection from="j00__j01" to="j01__e0" fromLane="0" toLane="0" tl="j01" linkIndex="3" />
+  <connection from="j00__j10" to="j10__s0" fromLane="0" toLane="0" tl="j10" linkIndex="0" />
+  <connection from="j11__j10" to="j10__w1" fromLane="0" toLane="0" tl="j10" linkIndex="1" />
+  <connection from="s0__j10" to="j10__j00" fromLane="0" toLane="0" tl="j10" linkIndex="2" />
+  <connection from="w1__j10" to="j10__j11" fromLane="0" toLane="0" tl="j10" linkIndex="3" />
+  <connection from="j01__j11" to="j11__s1" fromLane="0" toLane="0" tl="j11" linkIndex="0" />
+  <connection from="e1__j11" to="j11__j10" fromLane="0" toLane="0" tl="j11" linkIndex="1" />
+  <connection from="s1__j11" to="j11__j01" fromLane="0" toLane="0" tl="j11" linkIndex="2" />
+  <connection from="j10__j11" to="j11__e1" fromLane="0" toLane="0" tl="j11" linkIndex="3" />
+</connections>

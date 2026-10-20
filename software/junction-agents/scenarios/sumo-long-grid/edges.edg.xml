@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<edges>
+  <edge from="e0" to="j01" id="e0__j01" numLanes="1" speed="13.9" priority="1" />
+  <edge from="e1" to="j11" id="e1__j11" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j00" to="j01" id="j00__j01" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j00" to="j10" id="j00__j10" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j00" to="n0" id="j00__n0" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j00" to="w0" id="j00__w0" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j01" to="e0" id="j01__e0" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j01" to="j00" id="j01__j00" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j01" to="j11" id="j01__j11" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j01" to="n1" id="j01__n1" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j10" to="j00" id="j10__j00" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j10" to="j11" id="j10__j11" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j10" to="s0" id="j10__s0" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j10" to="w1" id="j10__w1" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j11" to="e1" id="j11__e1" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j11" to="j01" id="j11__j01" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j11" to="j10" id="j11__j10" numLanes="1" speed="13.9" priority="1" />
+  <edge from="j11" to="s1" id="j11__s1" numLanes="1" speed="13.9" priority="1" />
+  <edge from="n0" to="j00" id="n0__j00" numLanes="1" speed="13.9" priority="1" />
+  <edge from="n1" to="j01" id="n1__j01" numLanes="1" speed="13.9" priority="1" />
+  <edge from="s0" to="j10" id="s0__j10" numLanes="1" speed="13.9" priority="1" />
+  <edge from="s1" to="j11" id="s1__j11" numLanes="1" speed="13.9" priority="1" />
+  <edge from="w0" to="j00" id="w0__j00" numLanes="1" speed="13.9" priority="1" />
+  <edge from="w1" to="j10" id="w1__j10" numLanes="1" speed="13.9" priority="1" />
+</edges>

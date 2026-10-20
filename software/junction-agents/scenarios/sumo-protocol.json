@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "sumo_version": "1.28.0",
+  "development_seeds": [200000, 200004],
+  "evaluation_seeds": [210000, 210004],
+  "departure_window_seconds": 600,
+  "observation_horizon_seconds": 900,
+  "decision_interval_seconds": 5,
+  "yellow_seconds": 3,
+  "all_red_seconds": 2,
+  "minimum_green_seconds": 10,
+  "maximum_green_seconds": 60,
+  "policies": ["fixed_time", "sumo_actuated", "pressure", "joint_rollout", "cem", "q_zero_shot"],
+  "scenarios": [
+    {"name": "tidal_regular", "spacing_metres": 250, "rate": 0.10, "profile": "tidal"},
+    {"name": "tidal_heavy", "spacing_metres": 250, "rate": 0.16, "profile": "tidal"},
+    {"name": "long_asymmetric", "spacing_metres": 380, "rate": 0.10, "profile": "asymmetric"}
+  ],
+  "primary_reporting": ["arrived", "running_at_end", "pending_insertion_at_end", "mean_approach_halted_vehicles", "completed_mean_time_loss_seconds", "insertion_backlog_vehicle_seconds"],
+  "scope": "Synthetic networks and routes executed in SUMO, not a calibrated city case. The queue-trained Q table is tested zero-shot without SUMO fine-tuning. No controller parameter is selected using evaluation-seed outcomes."
+}

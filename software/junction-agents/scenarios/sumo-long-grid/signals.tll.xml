@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<additional>
+  <tlLogic id="j00" type="static" programID="controlled" offset="0">
+    <phase duration="30" state="GrGr" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="j00" type="actuated" programID="actuated" offset="0">
+    <phase duration="30" state="GrGr" minDur="10" maxDur="60" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" minDur="10" maxDur="60" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="j01" type="static" programID="controlled" offset="0">
+    <phase duration="30" state="GrGr" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="j01" type="actuated" programID="actuated" offset="0">
+    <phase duration="30" state="GrGr" minDur="10" maxDur="60" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" minDur="10" maxDur="60" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="j10" type="static" programID="controlled" offset="0">
+    <phase duration="30" state="GrGr" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="j10" type="actuated" programID="actuated" offset="0">
+    <phase duration="30" state="GrGr" minDur="10" maxDur="60" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" minDur="10" maxDur="60" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="j11" type="static" programID="controlled" offset="0">
+    <phase duration="30" state="GrGr" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="j11" type="actuated" programID="actuated" offset="0">
+    <phase duration="30" state="GrGr" minDur="10" maxDur="60" />
+    <phase duration="3" state="yryr" />
+    <phase duration="2" state="rrrr" />
+    <phase duration="30" state="rGrG" minDur="10" maxDur="60" />
+    <phase duration="3" state="ryry" />
+    <phase duration="2" state="rrrr" />
+  </tlLogic>
+</additional>
