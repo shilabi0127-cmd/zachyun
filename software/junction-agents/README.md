@@ -12,6 +12,12 @@ python -m junction_agents evaluate --episodes 25
 
 The trained Q table, training trace and full episode-level evaluation are committed in `examples/`. Re-running a command replaces its output file. Default training without `--episodes` uses 800 episodes; the committed run uses 600.
 
+An optional [CEM sequence planner](docs/cem.md) adds vectorized candidate rollouts and warm-started sampling. Its fresh-seed comparison records control outcomes and per-decision latency separately from the original experiment.
+
+```bash
+python -m junction_agents.planner_benchmark --episodes 10
+```
+
 ## Control problem
 
 Four junctions form a 2×2 grid. Each junction has north/east/south/west approach queues and two signal phases, NS and EW. Vehicles continue straight, move to the downstream approach after service, and leave at the network boundary.

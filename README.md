@@ -12,6 +12,7 @@ Four signal agents share a queue network. The experiment compares fixed-time con
 - The joint controller searches feasible first actions with three-step rollouts. A no-Q ablation checks whether learned values actually help.
 - Training, development and final evaluation use separate seed ranges. Every policy receives the same arrivals per scenario.
 - The current result supports the model-based coordination; the Q term has not demonstrated an additional queue-reduction benefit.
+- An optional [CEM sequence planner](software/junction-agents/docs/cem.md) includes vectorized model evaluation and a separate control/latency comparison.
 
 ```bash
 cd software/junction-agents
