@@ -13,9 +13,9 @@ def main():
     parser.add_argument('--seed-start',type=int,default=60000)
     args=parser.parse_args()
     if args.command=='train':
-        result=train(args.episodes or 800);output=args.output or args.checkpoint
+        result=train(args.episodes if args.episodes is not None else 800);output=args.output or args.checkpoint
     else:
-        result=evaluate(json.loads(args.checkpoint.read_text(encoding='utf-8')),args.episodes or 25,args.seed_start)
+        result=evaluate(json.loads(args.checkpoint.read_text(encoding='utf-8')),args.episodes if args.episodes is not None else 25,args.seed_start)
         output=args.output or Path('examples/evaluation.json')
     output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(result,indent=2),encoding='utf-8')

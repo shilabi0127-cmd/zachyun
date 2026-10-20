@@ -93,3 +93,9 @@ def test_episode_end_is_explicit():
     env=Network(0,Config(horizon=1))
     assert env.step(np.zeros(4,dtype=int))[1]
     with pytest.raises(RuntimeError):env.step(np.zeros(4,dtype=int))
+
+
+def test_cli_does_not_replace_zero_episodes_with_default(monkeypatch):
+    from junction_agents.__main__ import main
+    monkeypatch.setattr('sys.argv',['junction-agents','train','--episodes','0'])
+    with pytest.raises(ValueError,match='episodes'):main()
