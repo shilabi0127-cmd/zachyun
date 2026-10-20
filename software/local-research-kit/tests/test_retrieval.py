@@ -64,6 +64,12 @@ def test_short_source_aliases_resolve_to_content_id(index):
     assert valid[0]['source_id']==hits[0]['id'] and rejected==0
 
 
+def test_heading_is_not_supporting_evidence(index):
+    db,_=index;hits=db.search('保护窗口')
+    valid,rejected=validated_items({'items':[{'statement':'claim','source_id':'S1','quote':'# 保护窗口'}]},hits)
+    assert not valid and rejected==1
+
+
 def test_chunk_limits():
     assert all(len(c[3])<=650 for c in chunks('a'*2000))
 
