@@ -3,7 +3,7 @@
 ## 第一作者论文
 
 1. **Y. Zhang**, X. Song, P. Tao, H. Li, T. Zhan, Q. Cao. Investigating Factors for Travelers’ Parking Behavior Intentions in Changchun, China, under the Influence of Smart Parking Systems. *Sustainability*, 2023, 15(15), 11685. [DOI 10.3390/su151511685](https://doi.org/10.3390/su151511685).
-2. **张云翔**, 宋现敏, 谢渝, 等. 基于用户满意度的停车预约服务智能体行为仿真. *吉林大学学报（工学版）*. 已发表。
+2. 宋现敏, 谢渝, 等. 基于用户满意度的停车预约服务智能体行为仿真. *吉林大学学报（工学版）*. 已发表。
 
 ## 合作论文
 

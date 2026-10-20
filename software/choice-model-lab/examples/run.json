@@ -1,0 +1,90 @@
+{
+  "input": "synthetic",
+  "seed": 17,
+  "choice_sets": 1200,
+  "people": 300,
+  "train_people": 225,
+  "test_people": 75,
+  "train_choice_sets": 900,
+  "test_choice_sets": 300,
+  "group_overlap": 0,
+  "split_hash": "d3ecaeca35cb0ea32897325b2217ba9b2fd07fe656cb9535d54c51ba06c650ec",
+  "synthetic_truth": {
+    "price": -0.35,
+    "walk": -0.07,
+    "wait": -0.06,
+    "price_x_loyalty": -0.65
+  },
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "models": {
+    "cost_only": {
+      "coefficients": {
+        "price": {
+          "estimate": -0.513206369231718,
+          "cluster_robust_se": 0.028496001660860266
+        },
+        "walk": {
+          "estimate": -0.038752234709914075,
+          "cluster_robust_se": 0.013355261680245112
+        },
+        "wait": {
+          "estimate": -0.05602702010801708,
+          "cluster_robust_se": 0.024890103154507244
+        }
+      },
+      "training": {
+        "accuracy": 0.7555555555555555,
+        "mean_negative_log_likelihood": 0.5909815350278672,
+        "brier_multiclass": 0.3433633202620122
+      },
+      "test": {
+        "accuracy": 0.7666666666666667,
+        "mean_negative_log_likelihood": 0.5432441436111111,
+        "brier_multiclass": 0.30960306525984066
+      },
+      "converged": true,
+      "optimizer_message": "Optimization terminated successfully.",
+      "hessian_condition_number": 2.9403852565153357,
+      "iterations": 14
+    },
+    "loyalty_interaction": {
+      "coefficients": {
+        "price": {
+          "estimate": -0.3646716199195928,
+          "cluster_robust_se": 0.023301518874324814
+        },
+        "walk": {
+          "estimate": -0.04752659973178602,
+          "cluster_robust_se": 0.014140666616940892
+        },
+        "wait": {
+          "estimate": -0.06838227636869035,
+          "cluster_robust_se": 0.02584569858887934
+        },
+        "price_x_loyalty": {
+          "estimate": -0.6540005400658828,
+          "cluster_robust_se": 0.08016637541464525
+        }
+      },
+      "training": {
+        "accuracy": 0.7522222222222222,
+        "mean_negative_log_likelihood": 0.5418372170867021,
+        "brier_multiclass": 0.3208491037402933
+      },
+      "test": {
+        "accuracy": 0.7933333333333333,
+        "mean_negative_log_likelihood": 0.4970271917756821,
+        "brier_multiclass": 0.29143704509688734
+      },
+      "converged": true,
+      "optimizer_message": "Optimization terminated successfully.",
+      "hessian_condition_number": 56.67825608200073,
+      "iterations": 20
+    }
+  },
+  "scope": "Conditional logit with observed interaction; not Mixed Logit, causal inference or a thesis replication."
+}

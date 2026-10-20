@@ -1,0 +1,102 @@
+{
+  "backend": "gguf",
+  "model_label": "Qwen3-0.6B-Q8_0",
+  "cases": [
+    {
+      "seconds": 2.2,
+      "question": "共同随机数有什么作用",
+      "hits": [
+        {
+          "id": "63748fa5999c01c1",
+          "path": "experiment-design.md",
+          "heading": "策略对照实验",
+          "start_line": 1,
+          "end_line": 4,
+          "text": "# 策略对照实验\n\n共同随机数是指用同一组随机到离场样本评估不同分配策略，减少独立采样造成的比较噪声。它不能消除模型设定错误，也不证明真实业务的因果效果。\n",
+          "query_coverage": 0.4444444444444444,
+          "score": 8.257984822075375
+        }
+      ],
+      "backend_requested": "gguf",
+      "backend_used": "gguf",
+      "items": [
+        {
+          "statement": "共同随机数的作用是减少比较噪声",
+          "quote": "# 策略对照实验",
+          "source_id": "63748fa5999c01c1",
+          "path": "experiment-design.md",
+          "start_line": 1,
+          "end_line": 4
+        }
+      ],
+      "refused": false,
+      "generated": true,
+      "rejected_items": 0,
+      "verification": "Exact source IDs and quotes only; semantic entailment is not automatically verified."
+    },
+    {
+      "seconds": 9.462,
+      "question": "为什么按受访者划分测试集",
+      "hits": [
+        {
+          "id": "aa06a6b3983502e6",
+          "path": "choice-estimation.md",
+          "heading": "划分测试集",
+          "start_line": 5,
+          "end_line": 11,
+          "text": "## 划分测试集\n\n同一受访者可能回答多道选择题。训练集和测试集应按受访者分组划分，避免同一个人的记录同时进入两部分。标准化参数只在训练集计算，再应用于测试集。\n\n测试集准确率用于判断最可能方案是否与观测一致；负对数似然同时评价整组预测概率。两者各有用途，不能把准确率提高直接等同于运营收入增加。\n\n模型中的费用系数与时间系数之比可以用于换算时间价值，但前提是费用系数符号合理、量纲明确，并且解释范围符合数据与模型假设。",
+          "query_coverage": 0.6363636363636364,
+          "score": 13.088202939657066
+        }
+      ],
+      "backend_requested": "gguf",
+      "backend_used": "gguf",
+      "items": [
+        {
+          "statement": "按受访者划分测试集",
+          "quote": "同一受访者可能回答多道选择题。训练集和测试集应按受访者分组划分，避免同一个人的记录同时进入两部分。标准化参数只在训练集计算，再应用于测试集。",
+          "source_id": "aa06a6b3983502e6",
+          "path": "choice-estimation.md",
+          "start_line": 5,
+          "end_line": 11
+        },
+        {
+          "statement": "测试集准确率用于判断最可能方案是否与观测一致",
+          "quote": "测试集准确率用于判断最可能方案是否与观测一致；负对数似然同时评价整组预测概率。两者各有用途，不能把准确率提高直接等同于运营收入增加。",
+          "source_id": "aa06a6b3983502e6",
+          "path": "choice-estimation.md",
+          "start_line": 5,
+          "end_line": 11
+        },
+        {
+          "statement": "模型中的费用系数与时间系数之比可以用于换算时间价值",
+          "quote": "模型中的费用系数与时间系数之比可以用于换算时间价值，但前提是费用系数符号合理、量纲明确，并且解释范围符合数据与模型假设。",
+          "source_id": "aa06a6b3983502e6",
+          "path": "choice-estimation.md",
+          "start_line": 5,
+          "end_line": 11
+        }
+      ],
+      "refused": false,
+      "generated": true,
+      "rejected_items": 0,
+      "verification": "Exact source IDs and quotes only; semantic entailment is not automatically verified."
+    },
+    {
+      "seconds": 0.001,
+      "question": "樱桃蛋糕烘焙配方",
+      "hits": [],
+      "backend_requested": "gguf",
+      "backend_used": "extractive",
+      "items": [],
+      "refused": true,
+      "generated": false,
+      "rejected_items": 0,
+      "verification": "Exact source IDs and quotes only; semantic entailment is not automatically verified."
+    }
+  ],
+  "generated_cases": 2,
+  "nonempty_generated_cases": 2,
+  "filtered_items": 0,
+  "note": "A few local smoke cases. Exact quote/source validation is not semantic factuality evaluation. First request includes model loading."
+}

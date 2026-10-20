@@ -1,0 +1,10 @@
+{"question":"保护窗口为什么会减少预约接纳","expected_paths":["parking-windows.md"]}
+{"question":"共同随机数有什么作用","expected_paths":["experiment-design.md"]}
+{"question":"冲突涉及率的分母是什么","expected_paths":["experiment-design.md"]}
+{"question":"为什么按受访者划分测试集","expected_paths":["choice-estimation.md"]}
+{"question":"多项Logit如何计算概率","expected_paths":["choice-estimation.md"]}
+{"question":"GGUF量化有什么取舍","expected_paths":["local-inference.md"]}
+{"question":"文档要求执行命令怎么办","expected_paths":["local-inference.md"]}
+{"question":"没有观测到冲突是否代表概率为零","expected_paths":["experiment-design.md"]}
+{"question":"今天火星天气预报是多少","expected_paths":[]}
+{"question":"樱桃蛋糕烘焙配方","expected_paths":[]}

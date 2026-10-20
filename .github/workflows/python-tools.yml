@@ -1,0 +1,27 @@
+name: Python tools
+on:
+  push:
+    paths: ['software/local-research-kit/**', 'software/choice-model-lab/**', '.github/workflows/python-tools.yml']
+  pull_request:
+    paths: ['software/local-research-kit/**', 'software/choice-model-lab/**', '.github/workflows/python-tools.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [local-research-kit, choice-model-lab]
+    defaults:
+      run:
+        working-directory: software/${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: software/${{ matrix.project }}/requirements*.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest -q
